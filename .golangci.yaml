@@ -1,0 +1,22 @@
+run:
+  timeout: 5m
+
+  build-tags:
+    - e2e
+
+  skip-dirs:
+    - pkg/client
+
+linters:
+  enable:
+    - asciicheck
+    - errorlint
+    - gosec
+    - prealloc
+    - revive
+    - stylecheck
+    - tparallel
+    - unconvert
+    - unparam
+  disable:
+    - errcheck
