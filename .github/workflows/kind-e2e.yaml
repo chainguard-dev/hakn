@@ -1,0 +1,108 @@
+# Copyright 2022 Chainguard, Inc.
+# SPDX-License-Identifier: Apache-2.0
+
+name: KinD E2E
+
+on:
+  pull_request:
+    branches: [ main ]
+
+defaults:
+  run:
+    shell: bash
+    working-directory: ./src/github.com/chainguard-dev/hakn
+
+concurrency:
+  group: kind-e2e-${{ github.head_ref }}
+  cancel-in-progress: true
+
+jobs:
+  kind-test:
+    name: E2E Test
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false # Keep running if one leg fails.
+      matrix:
+        test-env:
+        - ingress-conformance
+        - serving-runtime-conformance
+        - serving-api-conformance
+
+    env:
+      GOPATH: ${{ github.workspace }}
+      GO111MODULE: on
+      GOFLAGS: -ldflags=-s -ldflags=-w
+      KO_DOCKER_REPO: registry.local:5000/chainguard
+      KOCACHE: ~/ko
+
+    steps:
+    - name: Check out hakn
+      uses: actions/checkout@v3
+      with:
+        path: ./src/github.com/chainguard-dev/hakn
+
+    - uses: chainguard-dev/actions/setup-mirror@main
+
+    # https://github.com/mvdan/github-actions-golang#how-do-i-set-up-caching-between-builds
+    - uses: actions/cache@v2
+      with:
+        # In order:
+        # * Module download cache
+        # * Build cache (Linux)
+        path: |
+          ~/go/pkg/mod
+          ~/.cache/go-build
+          ${{ inputs.kocache }}
+        key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+        restore-keys: |
+          ${{ runner.os }}-go-
+
+    - name: Set up Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: 1.17.x
+
+    - uses: imjasonh/setup-ko@v0.4
+      with:
+        version: v0.10.0
+
+    - name: Setup Cluster
+      uses: chainguard-dev/actions/setup-kind@main
+      id: kind
+      with:
+        k8s-version: v1.22.x
+        registry-authority: registry.local:5000
+
+    - name: Install hakn
+      timeout-minutes: 10
+      run: |
+        # Eliminates the resources blocks in a release yaml
+        function resource_blaster() {
+          local REPO="${1}"
+          local FILE="${2}"
+          curl -L -s "https://github.com/knative/${REPO}/releases/download/knative-v1.5.0/${FILE}" \
+            | yq e 'del(.spec.template.spec.containers[]?.resources)' - \
+            `# Filter out empty objects that come out as {} b/c kubectl barfs` \
+            | grep -v '^{}$'
+        }
+
+        # Without going through resource_blaster, Istio consumes 75%
+        # of the action's resources
+        resource_blaster net-istio istio.yaml | ko resolve -l knative.dev/crd-install=true -f - | kubectl apply -f -
+        sleep 5
+        resource_blaster net-istio istio.yaml | kubectl apply -f -
+
+        ko apply -BRf config
+
+        # Wait for the controlplane to be up.
+        kubectl rollout status --timeout=5m -n hakn-system statefulsets/controlplane
+
+    - uses: chainguard-dev/actions/setup-monitoring@main
+
+    - uses: ./src/github.com/chainguard-dev/hakn/.github/actions/tests/dispatcher
+      with:
+        test-env: ${{ matrix.test-env }}
+
+    - name: Collect diagnostics and upload
+      if: ${{ failure() }}
+      uses: chainguard-dev/actions/kind-diag@main

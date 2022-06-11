@@ -1,0 +1,65 @@
+# Copyright 2022 Chainguard, Inc.
+# SPDX-License-Identifier: Apache-2.0
+
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: hakn-namespaced-admin
+  labels:
+    rbac.authorization.k8s.io/aggregate-to-admin: "true"
+    knative.dev/release: devel
+rules:
+  - apiGroups:
+      - "serving.knative.dev"
+    resources: ["*"]
+    verbs: ["*"]
+
+  # Only allow cluster administrators to manipulate these.
+  - apiGroups:
+      - "autoscaling.internal.knative.dev"
+      - "caching.internal.knative.dev"
+      - "networking.internal.knative.dev"
+    resources: ["*"]
+    verbs: ["get", "list", "watch"]
+
+---
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: hakn-namespaced-edit
+  labels:
+    rbac.authorization.k8s.io/aggregate-to-edit: "true"
+    knative.dev/release: devel
+rules:
+  - apiGroups:
+      - "serving.knative.dev"
+    resources: ["*"]
+    verbs: ["create", "update", "patch", "delete"]
+
+  # Only allow cluster administrators to manipulate these.
+  - apiGroups:
+      - "autoscaling.internal.knative.dev"
+      - "caching.internal.knative.dev"
+      - "networking.internal.knative.dev"
+    resources: ["*"]
+    verbs: ["get", "list", "watch"]
+
+---
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: hakn-namespaced-view
+  labels:
+    rbac.authorization.k8s.io/aggregate-to-view: "true"
+    knative.dev/release: devel
+rules:
+  - apiGroups:
+      - "serving.knative.dev"
+    resources: ["*"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups:
+      - "autoscaling.internal.knative.dev"
+      - "caching.internal.knative.dev"
+      - "networking.internal.knative.dev"
+    resources: ["*"]
+    verbs: ["get", "list", "watch"]
