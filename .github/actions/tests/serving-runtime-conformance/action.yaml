@@ -1,0 +1,52 @@
+# Copyright 2022 Chainguard, Inc.
+# SPDX-License-Identifier: Apache-2.0
+
+name: Serving Runtime Conformance
+description: Steps to run Knative Serving's runtime conformance suite.
+
+runs:
+  using: "composite"
+  steps:
+    - name: Check out upstream code
+      uses: actions/checkout@v3
+      with:
+        repository: knative/serving
+        path: ./src/knative.dev/serving
+
+    - name: Upload test images
+      working-directory: ./src/knative.dev/serving
+      shell: bash
+      run: |
+        # These tests won't pass if we default to cluster-local...
+        kubectl apply -f - <<EOF
+        apiVersion: v1
+        kind: ConfigMap
+        metadata:
+          name: config-domain
+          namespace: hakn-system
+        data:
+          example.com: ""
+        EOF
+
+        ./test/upload-test-images.sh
+
+        kubectl create namespace serving-tests
+
+        # Make sure the things going to system namespace make it!
+        [[ ! -d ./test/config ]] || ko resolve -Pf test/config | \
+           sed -E "s/knative-serving/hakn-system/g" | \
+           kubectl apply -f -
+
+        # Needed for knative/serving e2e test
+        [[ ! -d ./test/config/resource-quota ]] || ko resolve -Pf test/config/resource-quota | \
+           sed -E "s/knative-serving/hakn-system/g" | \
+           kubectl apply -f -
+
+    - name: Run e2e Tests
+      working-directory: ./src/knative.dev/serving
+      shell: bash
+      env:
+        SYSTEM_NAMESPACE: hakn-system
+      run: |
+        go test -race -count=1 -timeout=50m -tags=e2e \
+          ./test/conformance/runtime/...

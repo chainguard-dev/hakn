@@ -1,0 +1,13 @@
+# Copyright 2022 Chainguard, Inc.
+# SPDX-License-Identifier: Apache-2.0
+
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: net-istio-role
+  labels:
+    knative.dev/release: devel
+rules:
+  - apiGroups: ["networking.istio.io"]
+    resources: ["virtualservices", "gateways", "destinationrules"]
+    verbs: ["get", "list", "create", "update", "delete", "patch", "watch"]
