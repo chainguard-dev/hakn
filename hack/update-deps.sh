@@ -72,6 +72,9 @@ for x in $(list_yamls ./vendor/knative.dev/serving/config/core/webhooks | grep -
   rewrite_common "$x" "./config/core/200-imported/200-serving/webhooks"
 done
 
+rewrite_common "./vendor/knative.dev/serving/config/core/200-roles/podspecable-bindings-clusterrole.yaml" "./config/core/200-imported/200-serving"
+
+
 # We need the Image resource from caching, but used by serving.
 rewrite_common "./vendor/knative.dev/caching/config/image.yaml" "./config/core/200-imported/200-serving/100-resources"
 

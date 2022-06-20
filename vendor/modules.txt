@@ -1245,6 +1245,7 @@ knative.dev/pkg/websocket
 knative.dev/serving/cmd/activator
 knative.dev/serving/cmd/autoscaler
 knative.dev/serving/cmd/queue
+knative.dev/serving/config/core/200-roles
 knative.dev/serving/config/core/300-resources
 knative.dev/serving/config/core/deployments
 knative.dev/serving/config/core/webhooks
