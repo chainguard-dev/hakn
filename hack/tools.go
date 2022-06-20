@@ -28,6 +28,7 @@ import (
 
 	// config directories
 	_ "knative.dev/caching/config"
+	_ "knative.dev/serving/config/core/200-roles"
 	_ "knative.dev/serving/config/core/300-resources"
 	_ "knative.dev/serving/config/core/deployments"
 	_ "knative.dev/serving/config/core/webhooks"
