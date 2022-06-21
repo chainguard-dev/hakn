@@ -25,7 +25,7 @@ runs:
       working-directory: ./src/knative.dev/net-istio
       shell: bash
       env:
-        SYSTEM_NAMESPACE: hakn-system
+        SYSTEM_NAMESPACE: knative-serving
       run: |
         # Run the tests tagged as e2e on the KinD cluster.
         go test -race -count=1 -short -timeout=20m -tags=e2e ./test/conformance \

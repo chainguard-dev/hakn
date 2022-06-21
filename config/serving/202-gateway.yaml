@@ -1,0 +1,66 @@
+# Copyright 2022 Chainguard, Inc.
+# SPDX-License-Identifier: Apache-2.0
+
+# This is the shared Gateway for all Knative routes to use.
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: knative-ingress-gateway
+  namespace: knative-serving
+  labels:
+    app.kubernetes.io/component: net-istio
+    app.kubernetes.io/name: knative-serving
+    app.kubernetes.io/version: devel
+    networking.knative.dev/ingress-provider: istio
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+  # TODO(mattmoor): Can we drop http?
+  - port:
+      name: http
+      number: 80
+      protocol: HTTP
+    hosts:
+    - "*"
+  - hosts:
+    - '*'
+    port:
+      name: https
+      number: 443
+      protocol: HTTPS
+    tls:
+      # This is the secret below.
+      credentialName: tls-cert
+      mode: SIMPLE
+
+---
+apiVersion: v1
+kind: Secret
+type: kubernetes.io/tls
+metadata:
+  name: tls-cert
+  namespace: istio-system
+stringData:
+  tls.key: "reconcile this"
+  tls.crt: "reconcile this"
+
+---
+# This is based on the istio-ingressgateway service, which we don't actually need
+# because this does the NodePort mapping we use to actually serve traffic.
+apiVersion: v1
+kind: Service
+metadata:
+  name: hakn-ingressgateway
+  namespace: istio-system
+spec:
+  type: NodePort
+  selector:
+    app: istio-ingressgateway
+    istio: ingressgateway
+  ports:
+    - name: https
+      port: 443
+      protocol: TCP
+      nodePort: 31443
+      targetPort: 8443

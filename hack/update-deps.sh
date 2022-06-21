@@ -20,27 +20,20 @@ git apply hack/patches/*.patch
 
 rm -rf $(find vendor/knative.dev/ -type l)
 
-function rewrite_namespaces() {
-  sed -E 's@knative-(serving|eventing)@hakn-system@g' | \
-  sed 's@namespace: tekton-pipelines@namespace: hakn-system@g' | \
-  sed 's@kourier-system@hakn-system@g'
-}
-
 function rewrite_annotation() {
   sed -E 's@(serving|eventing).knative.dev/release@knative.dev/release@g'
 }
 
 function rewrite_webhook() {
   sed 's@webhook.serving.knative.dev@webhook.hakn.chainguard.dev@g' | \
-    sed 's@name: eventing-webhook@name: webhook@g' | \
-    sed 's@name: tekton-pipelines-webhook@name: webhook@g'
+    sed 's@name: eventing-webhook@name: webhook@g'
 }
 
 function rewrite_common() {
   local readonly INPUT="${1}"
   local readonly OUTPUT_DIR="${2}"
 
-  cat "${INPUT}" | rewrite_namespaces | rewrite_annotation | \
+  cat "${INPUT}" | rewrite_annotation | \
     rewrite_webhook | rewrite_nobody | sed -e's/[[:space:]]*$//' \
     > "${OUTPUT_DIR}/$(basename ${INPUT})"
 }
@@ -66,23 +59,23 @@ rm $(find config/ -type f | grep imported) || true
 
 # Do a blanket copy of these resources
 for x in $(list_yamls ./vendor/knative.dev/serving/config/core/300-resources); do
-  rewrite_common "$x" "./config/core/200-imported/200-serving/100-resources"
+  rewrite_common "$x" "./config/serving/200-imported/200-serving/100-resources"
 done
 for x in $(list_yamls ./vendor/knative.dev/serving/config/core/webhooks | grep -v domainmapping); do
-  rewrite_common "$x" "./config/core/200-imported/200-serving/webhooks"
+  rewrite_common "$x" "./config/serving/200-imported/200-serving/webhooks"
 done
 
-rewrite_common "./vendor/knative.dev/serving/config/core/200-roles/podspecable-bindings-clusterrole.yaml" "./config/core/200-imported/200-serving"
+rewrite_common "./vendor/knative.dev/serving/config/core/200-roles/podspecable-bindings-clusterrole.yaml" "./config/serving/200-imported/200-serving"
 
 
 # We need the Image resource from caching, but used by serving.
-rewrite_common "./vendor/knative.dev/caching/config/image.yaml" "./config/core/200-imported/200-serving/100-resources"
+rewrite_common "./vendor/knative.dev/caching/config/image.yaml" "./config/serving/200-imported/200-serving/100-resources"
 
 # We need the resources from networking, but used by serving.
-rewrite_common "./vendor/knative.dev/networking/config/certificate.yaml" "./config/core/200-imported/200-serving/100-resources"
-rewrite_common "./vendor/knative.dev/networking/config/ingress.yaml" "./config/core/200-imported/200-serving/100-resources"
-rewrite_common "./vendor/knative.dev/networking/config/serverlessservice.yaml" "./config/core/200-imported/200-serving/100-resources"
-rewrite_common "./vendor/knative.dev/networking/config/domain-claim.yaml" "./config/core/200-imported/200-serving/100-resources"
+rewrite_common "./vendor/knative.dev/networking/config/certificate.yaml" "./config/serving/200-imported/200-serving/100-resources"
+rewrite_common "./vendor/knative.dev/networking/config/ingress.yaml" "./config/serving/200-imported/200-serving/100-resources"
+rewrite_common "./vendor/knative.dev/networking/config/serverlessservice.yaml" "./config/serving/200-imported/200-serving/100-resources"
+rewrite_common "./vendor/knative.dev/networking/config/domain-claim.yaml" "./config/serving/200-imported/200-serving/100-resources"
 
 #################################################
 #
@@ -92,7 +85,7 @@ rewrite_common "./vendor/knative.dev/networking/config/domain-claim.yaml" "./con
 #
 #################################################
 
-rewrite_common "./vendor/knative.dev/net-istio/config/203-local-gateway.yaml" "./config/core/200-imported/200-serving"
+rewrite_common "./vendor/knative.dev/net-istio/config/203-local-gateway.yaml" "./config/serving/200-imported/200-serving"
 
 
 #################################################
