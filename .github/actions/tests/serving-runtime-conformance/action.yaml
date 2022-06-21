@@ -23,7 +23,7 @@ runs:
         kind: ConfigMap
         metadata:
           name: config-domain
-          namespace: hakn-system
+          namespace: knative-serving
         data:
           example.com: ""
         EOF
@@ -33,20 +33,16 @@ runs:
         kubectl create namespace serving-tests
 
         # Make sure the things going to system namespace make it!
-        [[ ! -d ./test/config ]] || ko resolve -Pf test/config | \
-           sed -E "s/knative-serving/hakn-system/g" | \
-           kubectl apply -f -
+        [[ ! -d ./test/config ]] || ko apply -Pf test/config
 
         # Needed for knative/serving e2e test
-        [[ ! -d ./test/config/resource-quota ]] || ko resolve -Pf test/config/resource-quota | \
-           sed -E "s/knative-serving/hakn-system/g" | \
-           kubectl apply -f -
+        [[ ! -d ./test/config/resource-quota ]] || ko apply -Pf test/config/resource-quota
 
     - name: Run e2e Tests
       working-directory: ./src/knative.dev/serving
       shell: bash
       env:
-        SYSTEM_NAMESPACE: hakn-system
+        SYSTEM_NAMESPACE: knative-serving
       run: |
         go test -race -count=1 -timeout=50m -tags=e2e \
           ./test/conformance/runtime/...

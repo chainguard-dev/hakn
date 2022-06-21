@@ -95,7 +95,7 @@ jobs:
         ko apply -BRf config
 
         # Wait for the controlplane to be up.
-        kubectl rollout status --timeout=5m -n hakn-system statefulsets/controlplane
+        kubectl rollout status --timeout=5m -n knative-serving statefulsets/controlplane
 
     - uses: chainguard-dev/actions/setup-monitoring@main
 

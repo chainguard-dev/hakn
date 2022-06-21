@@ -1,0 +1,11 @@
+# Copyright 2022 Chainguard, Inc.
+# SPDX-License-Identifier: Apache-2.0
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: knative-serving
+  labels:
+    knative.dev/release: devel
+    eventing.knative.dev/injection: disabled
+    bindings.knative.dev/exclude: "true"

@@ -1,0 +1,25 @@
+# Copyright 2022 Chainguard, Inc.
+# SPDX-License-Identifier: Apache-2.0
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: config-domain
+  namespace: knative-serving
+  labels:
+    knative.dev/release: devel
+
+data:
+  # Default all Knative services to cluster-local and expose them via DomainMapping resources.
+  svc.cluster.local: ""
+
+  _example: |
+    ################################
+    #                              #
+    #    EXAMPLE CONFIGURATION     #
+    #                              #
+    ################################
+
+    # For examples of how to configure Knative components
+    # consult their respective _example blocks:
+    # - Serving: https://github.com/knative/serving/blob/master/config/core/configmaps/domain.yaml
