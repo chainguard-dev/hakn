@@ -1,6 +1,18 @@
 # Copyright 2022 Chainguard, Inc.
 # SPDX-License-Identifier: Apache-2.0
 
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: controlplane
+  namespace: knative-serving
+spec:
+  minAvailable: 50%
+  selector:
+    matchLabels:
+      app: controlplane
+
+---
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -10,6 +22,13 @@ metadata:
     knative.dev/release: devel
 spec:
   replicas: 2
+  # We allow things to deploy and update in parallel, but use a
+  # PodDisruptionBudget (above) to ensure that at least 1 pod remains available
+  # as we are updating things.  This is a delicate balancing act because:
+  # 1. We need to launch the initial set of pods in "Parallel" so that whichever
+  #   pod ends up the leader of the webhook cert comes up immediately, but
+  # 2. We cannot update all pods in parallel because this serves a webhook that
+  #   would become unavailable if all the pods were deleted at once.
   podManagementPolicy: Parallel
   updateStrategy:
     type: RollingUpdate
@@ -261,4 +280,3 @@ spec:
     port: 81
     targetPort: 8013
   type: ClusterIP
-
