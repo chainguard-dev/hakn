@@ -1,0 +1,90 @@
+# Copyright 2022 Chainguard, Inc.
+# SPDX-License-Identifier: Apache-2.0
+
+on:
+  push:
+    # Sequence of patterns matched against refs/tags
+    tags:
+    - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
+
+name: Create Release
+
+jobs:
+  create-release:
+    name: Create the release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/create-release@v1
+        id: create_release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: false
+          prerelease: false
+
+  ko-resolve:
+    needs: create-release
+    name: Release ko artifact and push to Github Container Registry
+    runs-on: ubuntu-latest
+
+    permissions:
+      id-token: write
+      packages: write
+      contents: write
+
+    steps:
+    - uses: actions/setup-go@v3
+      with:
+        go-version: 1.17.x
+
+    # will install latest ko version and default login/configure
+    # KO_DOCKER_REPO to ghcr.io
+    - uses: imjasonh/setup-ko@v0.4
+
+    - uses: sigstore/cosign-installer@main
+
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 1
+
+    - uses: bruceadams/get-release@v1.2.3
+      id: get_release_url
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+
+    - name: Build, Sign and Publish images.
+      run: |
+        ko resolve --platform=linux/amd64,linux/arm64 \
+                   --image-refs=serving.images \
+                   --tags $(basename "${{ github.ref }}" ) \
+                   -BRf config/serving > serving.yaml
+
+        COSIGN_EXPERIMENTAL=true cosign sign $(cat serving.images)
+
+    - name: Upload Release Asset
+      id: upload-release-asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.get_release_url.outputs.upload_url }}
+        asset_path: ./serving.yaml
+        asset_name: serving.yaml
+        asset_content_type: text/plain
+
+    - name: Post failure notice to Slack
+      uses: rtCamp/action-slack-notify@v2.2.0
+      if: ${{ failure() }}
+      env:
+        SLACK_ICON: http://github.com/chainguard-dev.png?size=48
+        SLACK_USERNAME: guardian
+        SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+        SLACK_CHANNEL: "@mattmoor" # DO NOT SUBMIT "eng"
+        SLACK_COLOR: '#8E1600'
+        MSG_MINIMAL: 'true'
+        SLACK_TITLE: Release ${{ github.ref }} failed
+        SLACK_MESSAGE: |
+          For detailed logs: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
