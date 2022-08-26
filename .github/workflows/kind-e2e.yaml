@@ -80,7 +80,7 @@ jobs:
         function resource_blaster() {
           local REPO="${1}"
           local FILE="${2}"
-          curl -L -s "https://github.com/knative/${REPO}/releases/download/knative-v1.5.0/${FILE}" \
+          curl -L -s "https://github.com/knative/${REPO}/releases/download/knative-v1.7.1/${FILE}" \
             | yq e 'del(.spec.template.spec.containers[]?.resources)' - \
             `# Filter out empty objects that come out as {} b/c kubectl barfs` \
             | grep -v '^{}$'
