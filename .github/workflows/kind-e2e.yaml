@@ -64,7 +64,7 @@ jobs:
 
     - uses: imjasonh/setup-ko@v0.5
       with:
-        version: v0.10.0
+        version: tip
 
     - name: Setup Cluster
       uses: chainguard-dev/actions/setup-kind@main

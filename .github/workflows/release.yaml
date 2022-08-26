@@ -43,6 +43,8 @@ jobs:
     # will install latest ko version and default login/configure
     # KO_DOCKER_REPO to ghcr.io
     - uses: imjasonh/setup-ko@v0.5
+      with:
+        version: tip
 
     - uses: sigstore/cosign-installer@main
 
