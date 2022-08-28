@@ -44,7 +44,7 @@ jobs:
     # KO_DOCKER_REPO to ghcr.io
     - uses: imjasonh/setup-ko@v0.5
       with:
-        version: tip
+        version: v0.12.0
 
     - uses: sigstore/cosign-installer@main
 
