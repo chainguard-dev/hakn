@@ -60,11 +60,11 @@ jobs:
     - name: Set up Go
       uses: actions/setup-go@v2
       with:
-        go-version: 1.17.x
+        go-version: 1.18.x
 
-    - uses: imjasonh/setup-ko@v0.4
+    - uses: imjasonh/setup-ko@v0.5
       with:
-        version: v0.10.0
+        version: v0.12.0
 
     - name: Setup Cluster
       uses: chainguard-dev/actions/setup-kind@main
@@ -80,7 +80,7 @@ jobs:
         function resource_blaster() {
           local REPO="${1}"
           local FILE="${2}"
-          curl -L -s "https://github.com/knative/${REPO}/releases/download/knative-v1.5.0/${FILE}" \
+          curl -L -s "https://github.com/knative/${REPO}/releases/download/knative-v1.7.0/${FILE}" \
             | yq e 'del(.spec.template.spec.containers[]?.resources)' - \
             `# Filter out empty objects that come out as {} b/c kubectl barfs` \
             | grep -v '^{}$'

@@ -16,7 +16,9 @@ export FLOATING_DEPS=(
 go_update_deps "$@"
 
 # Apply any patches
-git apply hack/patches/*.patch
+if [ "$(ls -A hack/patches)" ]; then
+  git apply hack/patches/*.patch
+fi
 
 rm -rf $(find vendor/knative.dev/ -type l)
 

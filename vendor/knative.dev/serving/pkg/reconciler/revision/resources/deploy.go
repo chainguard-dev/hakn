@@ -19,6 +19,7 @@ package resources
 import (
 	"fmt"
 	"strconv"
+	"strings"
 	"time"
 
 	netheader "knative.dev/networking/pkg/http/header"
@@ -36,11 +37,11 @@ import (
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/util/intstr"
+
+	apiconfig "knative.dev/serving/pkg/apis/config"
 )
 
-//nolint:gosec // Filepath, not hardcoded credentials
-const concurrencyStateTokenVolumeMountPath = "/var/run/secrets/tokens"
-const concurrencyStateTokenName = "state-token"
+const certVolumeName = "server-certs"
 
 var (
 	varLogVolume = corev1.Volume{
@@ -56,6 +57,7 @@ var (
 		SubPathExpr: "$(K_INTERNAL_POD_NAMESPACE)_$(K_INTERNAL_POD_NAME)_",
 	}
 
+	//nolint:gosec // Volume, not hardcoded credentials
 	varTokenVolume = corev1.Volume{
 		Name: "knative-token-volume",
 		VolumeSource: corev1.VolumeSource{
@@ -63,22 +65,43 @@ var (
 				Sources: []corev1.VolumeProjection{{
 					ServiceAccountToken: &corev1.ServiceAccountTokenProjection{
 						ExpirationSeconds: ptr.Int64(600),
-						Path:              concurrencyStateTokenName,
+						Path:              queue.ConcurrencyStateTokenFilename,
 						Audience:          "concurrency-state-hook"},
 				}},
 			},
 		},
 	}
 
-	certVolumeMount = corev1.VolumeMount{
+	varCertVolumeMount = corev1.VolumeMount{
 		MountPath: queue.CertDirectory,
-		Name:      "server-certs",
+		Name:      certVolumeName,
 		ReadOnly:  true,
 	}
 
+	//nolint:gosec // VolumeMount, not hardcoded credentials
 	varTokenVolumeMount = corev1.VolumeMount{
 		Name:      varTokenVolume.Name,
-		MountPath: concurrencyStateTokenVolumeMountPath,
+		MountPath: queue.TokenDirectory,
+	}
+
+	varPodInfoVolume = corev1.Volume{
+		Name: "pod-info",
+		VolumeSource: corev1.VolumeSource{
+			DownwardAPI: &corev1.DownwardAPIVolumeSource{
+				Items: []corev1.DownwardAPIVolumeFile{{
+					Path: queue.PodInfoAnnotationsFilename,
+					FieldRef: &corev1.ObjectFieldSelector{
+						FieldPath: "metadata.annotations",
+					},
+				}},
+			},
+		},
+	}
+
+	varPodInfoVolumeMount = corev1.VolumeMount{
+		Name:      varPodInfoVolume.Name,
+		MountPath: queue.PodInfoDirectory,
+		ReadOnly:  true,
 	}
 
 	// This PreStop hook is actually calling an endpoint on the queue-proxy
@@ -97,7 +120,7 @@ var (
 
 func certVolume(secret string) corev1.Volume {
 	return corev1.Volume{
-		Name: "server-certs",
+		Name: certVolumeName,
 		VolumeSource: corev1.VolumeSource{
 			Secret: &corev1.SecretVolumeSource{
 				SecretName: secret,
@@ -133,15 +156,26 @@ func makePodSpec(rev *v1.Revision, cfg *config.Config) (*corev1.PodSpec, error) 
 	}
 
 	var extraVolumes []corev1.Volume
+
+	podInfoFeature, podInfoExists := rev.Annotations[apiconfig.QueueProxyPodInfoFeatureKey]
+
+	if cfg.Features.QueueProxyMountPodInfo == apiconfig.Enabled ||
+		(cfg.Features.QueueProxyMountPodInfo == apiconfig.Allowed &&
+			podInfoExists &&
+			strings.EqualFold(podInfoFeature, string(apiconfig.Enabled))) {
+		queueContainer.VolumeMounts = append(queueContainer.VolumeMounts, varPodInfoVolumeMount)
+		extraVolumes = append(extraVolumes, varPodInfoVolume)
+	}
+
 	// If concurrencyStateEndpoint is enabled, add the serviceAccountToken to QP via a projected volume
 	if cfg.Deployment.ConcurrencyStateEndpoint != "" {
 		queueContainer.VolumeMounts = append(queueContainer.VolumeMounts, varTokenVolumeMount)
 		extraVolumes = append(extraVolumes, varTokenVolume)
 	}
 
-	if cfg.Network.QueueProxyCertSecret != "" {
-		queueContainer.VolumeMounts = append(queueContainer.VolumeMounts, certVolumeMount)
-		extraVolumes = append(extraVolumes, certVolume(cfg.Network.QueueProxyCertSecret))
+	if cfg.Network.InternalEncryption {
+		queueContainer.VolumeMounts = append(queueContainer.VolumeMounts, varCertVolumeMount)
+		extraVolumes = append(extraVolumes, certVolume(rev.Namespace+"-"+networking.ServingCertName))
 	}
 
 	podSpec := BuildPodSpec(rev, append(BuildUserContainers(rev), *queueContainer), cfg)
