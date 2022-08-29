@@ -10,6 +10,8 @@ metadata:
     knative.dev/release: devel
 
 data:
+  metrics.backend-destination: prometheus
+  metrics.request-metrics-backend-destination: prometheus
   _example: |
     ################################
     #                              #
