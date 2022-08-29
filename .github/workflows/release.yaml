@@ -14,7 +14,7 @@ jobs:
     name: Create the release
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # v3
       - uses: actions/create-release@v1
         id: create_release
         env:
@@ -36,19 +36,20 @@ jobs:
       contents: write
 
     steps:
-    - uses: actions/setup-go@v3
+    - uses: actions/setup-go@268d8c0ca0432bb2cf416faae41297df9d262d7f # v3
       with:
-        go-version: 1.18.x
+        go-version: 1.18
+        check-latest: true
 
     # will install latest ko version and default login/configure
     # KO_DOCKER_REPO to ghcr.io
-    - uses: imjasonh/setup-ko@v0.5
+    - uses: imjasonh/setup-ko@78eea08f10db87a7a23a666a4a6fe2734f2eeb8d # v0.5
       with:
         version: v0.12.0
 
     - uses: sigstore/cosign-installer@main
 
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # v3
       with:
         fetch-depth: 1
 

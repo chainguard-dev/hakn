@@ -43,13 +43,14 @@ jobs:
     steps:
 
       - name: Set up Go 1.18.x
-        uses: actions/setup-go@v2
+        uses: actions/setup-go@268d8c0ca0432bb2cf416faae41297df9d262d7f # v3
         with:
-          go-version: 1.18.x
+          go-version: 1.18
+          check-latest: true
         id: go
 
       - name: Check out code
-        uses: actions/checkout@v2
+        uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # v3
 
       - name: Install Tools
         run: |
@@ -67,7 +68,7 @@ jobs:
           echo "${TEMP_PATH}" >> $GITHUB_PATH
 
       - id: boilerplate_txt
-        uses: andstor/file-existence-action@v1
+        uses: andstor/file-existence-action@f02338908d150e00a4b8bebc2dad18bd9e5229b0 # v1.1.0
         with:
           files: ./hack/boilerplate/boilerplate.${{ matrix.extension }}.txt
       - name: ${{ matrix.language }} license boilerplate
