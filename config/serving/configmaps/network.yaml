@@ -13,6 +13,9 @@ data:
   # The default networking integrations bundled with hakn.
   ingress.class: "istio.ingress.networking.knative.dev"
 
+  # Gradually shift traffic over 30 seconds
+  rollout-duration: "30s"
+
   # TODO: Enable auto-TLS based on self-signed certs.
   # autoTLS: "Enabled"
   # certificate.class: "net-http01.certificate.networking.knative.dev"
