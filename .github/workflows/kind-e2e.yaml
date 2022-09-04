@@ -95,6 +95,11 @@ jobs:
 
         ko apply -BRf config
 
+        kubectl patch configmap/config-autoscaler \
+          --namespace knative-serving \
+          --type merge \
+          --patch '{"data":{"min-scale": "1", "target-burst-capacity": "0"}}'
+
         # Wait for the controlplane to be up.
         kubectl rollout status --timeout=5m -n knative-serving statefulsets/controlplane
 
