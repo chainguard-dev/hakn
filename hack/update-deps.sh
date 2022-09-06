@@ -28,7 +28,8 @@ function rewrite_annotation() {
 
 function rewrite_webhook() {
   sed 's@webhook.serving.knative.dev@webhook.hakn.chainguard.dev@g' | \
-    sed 's@name: eventing-webhook@name: webhook@g'
+    sed 's@name: eventing-webhook@name: webhook@g' | \
+    sed 's@timeoutSeconds: \d+@timeoutSeconds: 25@g'
 }
 
 function rewrite_common() {
