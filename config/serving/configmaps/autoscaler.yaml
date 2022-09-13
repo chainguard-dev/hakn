@@ -13,6 +13,10 @@ data:
   # Leave a replica of each active revision available.
   min-scale: "2"
 
+  # A global ceiling to prevent infinite scaling.
+  # Individual revisions are still allowed to exceed this.
+  max-scale: "30"
+
   # (with above) never have activator in the request path.
   target-burst-capacity: "0"
 
