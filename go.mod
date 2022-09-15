@@ -3,7 +3,7 @@ module github.com/chainguard-dev/hakn
 go 1.18
 
 require (
-	github.com/google/go-cmp v0.5.7
+	github.com/google/go-cmp v0.5.9
 	github.com/hashicorp/golang-lru v0.5.4
 	go.uber.org/zap v1.19.1
 	istio.io/api v0.0.0-20210713195055-3a340e4f154e
