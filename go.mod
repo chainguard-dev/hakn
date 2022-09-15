@@ -5,7 +5,7 @@ go 1.18
 require (
 	github.com/google/go-cmp v0.5.7
 	github.com/hashicorp/golang-lru v0.5.4
-	go.uber.org/zap v1.19.1
+	go.uber.org/zap v1.23.0
 	istio.io/api v0.0.0-20210713195055-3a340e4f154e
 	k8s.io/api v0.23.9
 	k8s.io/apimachinery v0.23.9
@@ -48,6 +48,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/sts v1.15.0 // indirect
 	github.com/aws/smithy-go v1.11.0 // indirect
 	github.com/awslabs/amazon-ecr-credential-helper/ecr-login v0.0.0-20220228164355-396b2034c795 // indirect
+	github.com/benbjohnson/clock v1.1.0 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/blang/semver/v4 v4.0.0 // indirect
 	github.com/blendle/zapdriver v1.3.1 // indirect
