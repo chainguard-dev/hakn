@@ -1,0 +1,137 @@
+From 77be6cf89d9fd35dff8da98a9c3f6240c5640b2d Mon Sep 17 00:00:00 2001
+From: Matt Moore <mattmoor@chainguard.dev>
+Date: Tue, 20 Sep 2022 15:49:51 -0700
+Subject: [PATCH] Apply https://github.com/knative/serving/pull/13323 to vendor
+
+---
+ .../knative.dev/serving/pkg/reconciler/autoscaling/kpa/kpa.go   | 2 +-
+ .../serving/pkg/reconciler/configuration/configuration.go       | 2 +-
+ .../serving/pkg/reconciler/domainmapping/reconciler.go          | 2 +-
+ vendor/knative.dev/serving/pkg/reconciler/gc/reconciler.go      | 2 +-
+ vendor/knative.dev/serving/pkg/reconciler/labeler/labeler.go    | 2 +-
+ vendor/knative.dev/serving/pkg/reconciler/revision/revision.go  | 2 +-
+ vendor/knative.dev/serving/pkg/reconciler/route/route.go        | 2 +-
+ .../pkg/reconciler/serverlessservice/serverlessservice.go       | 2 +-
+ vendor/knative.dev/serving/pkg/reconciler/service/service.go    | 2 +-
+ 9 files changed, 9 insertions(+), 9 deletions(-)
+
+diff --git a/vendor/knative.dev/serving/pkg/reconciler/autoscaling/kpa/kpa.go b/vendor/knative.dev/serving/pkg/reconciler/autoscaling/kpa/kpa.go
+index 8025575..3601434 100644
+--- a/vendor/knative.dev/serving/pkg/reconciler/autoscaling/kpa/kpa.go
++++ b/vendor/knative.dev/serving/pkg/reconciler/autoscaling/kpa/kpa.go
+@@ -81,7 +81,7 @@ var (
+
+ // ReconcileKind implements Interface.ReconcileKind.
+ func (c *Reconciler) ReconcileKind(ctx context.Context, pa *autoscalingv1alpha1.PodAutoscaler) pkgreconciler.Event {
+-	ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
++	ctx, cancel := context.WithTimeout(ctx, 30*time.Second)
+ 	defer cancel()
+
+ 	logger := logging.FromContext(ctx)
+diff --git a/vendor/knative.dev/serving/pkg/reconciler/configuration/configuration.go b/vendor/knative.dev/serving/pkg/reconciler/configuration/configuration.go
+index ecda5aa..0d69892 100644
+--- a/vendor/knative.dev/serving/pkg/reconciler/configuration/configuration.go
++++ b/vendor/knative.dev/serving/pkg/reconciler/configuration/configuration.go
+@@ -58,7 +58,7 @@ var _ configreconciler.Interface = (*Reconciler)(nil)
+
+ // ReconcileKind implements Interface.ReconcileKind.
+ func (c *Reconciler) ReconcileKind(ctx context.Context, config *v1.Configuration) pkgreconciler.Event {
+-	ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
++	ctx, cancel := context.WithTimeout(ctx, 30*time.Second)
+ 	defer cancel()
+
+ 	logger := logging.FromContext(ctx)
+diff --git a/vendor/knative.dev/serving/pkg/reconciler/domainmapping/reconciler.go b/vendor/knative.dev/serving/pkg/reconciler/domainmapping/reconciler.go
+index dec9529..4f2aefb 100644
+--- a/vendor/knative.dev/serving/pkg/reconciler/domainmapping/reconciler.go
++++ b/vendor/knative.dev/serving/pkg/reconciler/domainmapping/reconciler.go
+@@ -80,7 +80,7 @@ func (r *Reconciler) GetCertificateLister() networkinglisters.CertificateLister
+
+ // ReconcileKind implements Interface.ReconcileKind.
+ func (r *Reconciler) ReconcileKind(ctx context.Context, dm *v1alpha1.DomainMapping) reconciler.Event {
+-	ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
++	ctx, cancel := context.WithTimeout(ctx, 30*time.Second)
+ 	defer cancel()
+
+ 	logger := logging.FromContext(ctx)
+diff --git a/vendor/knative.dev/serving/pkg/reconciler/gc/reconciler.go b/vendor/knative.dev/serving/pkg/reconciler/gc/reconciler.go
+index 2918c02..bc9c816 100644
+--- a/vendor/knative.dev/serving/pkg/reconciler/gc/reconciler.go
++++ b/vendor/knative.dev/serving/pkg/reconciler/gc/reconciler.go
+@@ -40,7 +40,7 @@ var _ configreconciler.Interface = (*reconciler)(nil)
+
+ // ReconcileKind implements Interface.ReconcileKind.
+ func (c *reconciler) ReconcileKind(ctx context.Context, config *v1.Configuration) pkgreconciler.Event {
+-	ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
++	ctx, cancel := context.WithTimeout(ctx, 30*time.Second)
+ 	defer cancel()
+
+ 	return collect(ctx, c.client, c.revisionLister, config)
+diff --git a/vendor/knative.dev/serving/pkg/reconciler/labeler/labeler.go b/vendor/knative.dev/serving/pkg/reconciler/labeler/labeler.go
+index 8908446..6b02d34 100644
+--- a/vendor/knative.dev/serving/pkg/reconciler/labeler/labeler.go
++++ b/vendor/knative.dev/serving/pkg/reconciler/labeler/labeler.go
+@@ -44,7 +44,7 @@ func (rec *Reconciler) FinalizeKind(ctx context.Context, r *v1.Route) pkgreconci
+ // ReconcileKind syncs the Route reference metadata to its traffic targets.
+ // This does not modify or observe spec for the Route itself.
+ func (rec *Reconciler) ReconcileKind(ctx context.Context, r *v1.Route) pkgreconciler.Event {
+-	ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
++	ctx, cancel := context.WithTimeout(ctx, 30*time.Second)
+ 	defer cancel()
+
+ 	return syncRoutingMeta(ctx, r, rec.caccV2, rec.raccV2)
+diff --git a/vendor/knative.dev/serving/pkg/reconciler/revision/revision.go b/vendor/knative.dev/serving/pkg/reconciler/revision/revision.go
+index 8922d04..0c5deac 100644
+--- a/vendor/knative.dev/serving/pkg/reconciler/revision/revision.go
++++ b/vendor/knative.dev/serving/pkg/reconciler/revision/revision.go
+@@ -113,7 +113,7 @@ func (c *Reconciler) reconcileDigest(ctx context.Context, rev *v1.Revision) (boo
+
+ // ReconcileKind implements Interface.ReconcileKind.
+ func (c *Reconciler) ReconcileKind(ctx context.Context, rev *v1.Revision) pkgreconciler.Event {
+-	ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
++	ctx, cancel := context.WithTimeout(ctx, 30*time.Second)
+ 	defer cancel()
+
+ 	readyBeforeReconcile := rev.IsReady()
+diff --git a/vendor/knative.dev/serving/pkg/reconciler/route/route.go b/vendor/knative.dev/serving/pkg/reconciler/route/route.go
+index d3c845a..c3fe7ab 100644
+--- a/vendor/knative.dev/serving/pkg/reconciler/route/route.go
++++ b/vendor/knative.dev/serving/pkg/reconciler/route/route.go
+@@ -98,7 +98,7 @@ func certClass(ctx context.Context, r *v1.Route) string {
+
+ // ReconcileKind implements Interface.ReconcileKind.
+ func (c *Reconciler) ReconcileKind(ctx context.Context, r *v1.Route) pkgreconciler.Event {
+-	ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
++	ctx, cancel := context.WithTimeout(ctx, 30*time.Second)
+ 	defer cancel()
+
+ 	logger := logging.FromContext(ctx)
+diff --git a/vendor/knative.dev/serving/pkg/reconciler/serverlessservice/serverlessservice.go b/vendor/knative.dev/serving/pkg/reconciler/serverlessservice/serverlessservice.go
+index d2c02a2..f2c5ec6 100644
+--- a/vendor/knative.dev/serving/pkg/reconciler/serverlessservice/serverlessservice.go
++++ b/vendor/knative.dev/serving/pkg/reconciler/serverlessservice/serverlessservice.go
+@@ -67,7 +67,7 @@ var _ sksreconciler.Interface = (*reconciler)(nil)
+ // converge the two. It then updates the Status block of the Revision resource
+ // with the current status of the resource.
+ func (r *reconciler) ReconcileKind(ctx context.Context, sks *netv1alpha1.ServerlessService) pkgreconciler.Event {
+-	ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
++	ctx, cancel := context.WithTimeout(ctx, 30*time.Second)
+ 	defer cancel()
+
+ 	logger := logging.FromContext(ctx)
+diff --git a/vendor/knative.dev/serving/pkg/reconciler/service/service.go b/vendor/knative.dev/serving/pkg/reconciler/service/service.go
+index ec5c81d..d66c4d3 100644
+--- a/vendor/knative.dev/serving/pkg/reconciler/service/service.go
++++ b/vendor/knative.dev/serving/pkg/reconciler/service/service.go
+@@ -58,7 +58,7 @@ var _ ksvcreconciler.Interface = (*Reconciler)(nil)
+
+ // ReconcileKind implements Interface.ReconcileKind.
+ func (c *Reconciler) ReconcileKind(ctx context.Context, service *v1.Service) pkgreconciler.Event {
+-	ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
++	ctx, cancel := context.WithTimeout(ctx, 30*time.Second)
+ 	defer cancel()
+
+ 	logger := logging.FromContext(ctx)
+--
+2.29.2
+
