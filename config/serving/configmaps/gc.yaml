@@ -11,16 +11,13 @@ metadata:
 
 data:
   # Since we don't run an activator, our minScale revisions don't
-  # scale to zero when they become inactive, so instead we make
-  # the GC settings fairly aggressive.
-  # https://knative.dev/docs/serving/configuration/revision-gc/
+  # scale to zero when they become inactive, so instead we have
+  # the GC immediately clean up inactive revisions.
+  # https://knative.dev/docs/serving/revisions/revision-admin-config-options/
   min-non-active-revisions: "0"
-  # Only keep the last revision for rollbacks
-  max-non-active-revisions: "1"
+  max-non-active-revisions: "0"
   retain-since-create-time: "disabled"
-  # If a revision was active, then keep it around for this long
-  # in case we need to rollback.
-  retain-since-last-active-time: "12h"
+  retain-since-last-active-time: "disabled"
 
   _example: |
     ################################
