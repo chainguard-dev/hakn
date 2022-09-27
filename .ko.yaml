@@ -1,1 +1,1 @@
-defaultBaseImage: ghcr.io/distroless/static
+defaultBaseImage: cgr.dev/chainguard/static
