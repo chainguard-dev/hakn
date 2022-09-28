@@ -1255,7 +1255,7 @@ knative.dev/pkg/webhook/resourcesemantics/defaulting
 knative.dev/pkg/webhook/resourcesemantics/validation
 knative.dev/pkg/webhook/testing
 knative.dev/pkg/websocket
-# knative.dev/serving v0.34.1
+# knative.dev/serving v0.34.2
 ## explicit; go 1.18
 knative.dev/serving/cmd/activator
 knative.dev/serving/cmd/autoscaler
