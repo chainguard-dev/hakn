@@ -1,0 +1,56 @@
+From f5f2c2978bef68a89e06628539bf636c6564dffc Mon Sep 17 00:00:00 2001
+From: Matt Moore <mattmoor@chainguard.dev>
+Date: Sun, 16 Oct 2022 15:48:13 -0700
+Subject: [PATCH] Patch knative/serving#13402 into hakn
+
+---
+ .../serving/config/core/300-resources/configuration.yaml       | 3 +++
+ .../serving/config/core/300-resources/revision.yaml            | 3 +++
+ .../knative.dev/serving/config/core/300-resources/service.yaml | 3 +++
+ 3 files changed, 9 insertions(+)
+
+diff --git a/vendor/knative.dev/serving/config/core/300-resources/configuration.yaml b/vendor/knative.dev/serving/config/core/300-resources/configuration.yaml
+index 32403f3..bc2ff09 100644
+--- a/vendor/knative.dev/serving/config/core/300-resources/configuration.yaml
++++ b/vendor/knative.dev/serving/config/core/300-resources/configuration.yaml
+@@ -445,6 +445,9 @@ spec:
+                                 description: 'SecurityContext defines the security options the container should be run with. If set, the fields of SecurityContext override the equivalent fields of PodSecurityContext. More info: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/'
+                                 type: object
+                                 properties:
++                                  allowPrivilegeEscalation:
++                                    description: 'AllowPrivilegeEscalation controls whether a process can gain more privileges than its parent process. This bool directly controls if the no_new_privs flag will be set on the container process. AllowPrivilegeEscalation is true always when the container is: 1) run as Privileged 2) has CAP_SYS_ADMIN Note that this field cannot be set when spec.os.name is windows.'
++                                    type: boolean
+                                   capabilities:
+                                     description: The capabilities to add/drop when running containers. Defaults to the default set of capabilities granted by the container runtime. Note that this field cannot be set when spec.os.name is windows.
+                                     type: object
+diff --git a/vendor/knative.dev/serving/config/core/300-resources/revision.yaml b/vendor/knative.dev/serving/config/core/300-resources/revision.yaml
+index 1183bbd..9fc5588 100644
+--- a/vendor/knative.dev/serving/config/core/300-resources/revision.yaml
++++ b/vendor/knative.dev/serving/config/core/300-resources/revision.yaml
+@@ -424,6 +424,9 @@ spec:
+                         description: 'SecurityContext defines the security options the container should be run with. If set, the fields of SecurityContext override the equivalent fields of PodSecurityContext. More info: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/'
+                         type: object
+                         properties:
++                          allowPrivilegeEscalation:
++                            description: 'AllowPrivilegeEscalation controls whether a process can gain more privileges than its parent process. This bool directly controls if the no_new_privs flag will be set on the container process. AllowPrivilegeEscalation is true always when the container is: 1) run as Privileged 2) has CAP_SYS_ADMIN Note that this field cannot be set when spec.os.name is windows.'
++                            type: boolean
+                           capabilities:
+                             description: The capabilities to add/drop when running containers. Defaults to the default set of capabilities granted by the container runtime. Note that this field cannot be set when spec.os.name is windows.
+                             type: object
+diff --git a/vendor/knative.dev/serving/config/core/300-resources/service.yaml b/vendor/knative.dev/serving/config/core/300-resources/service.yaml
+index 453a67d..75e2066 100644
+--- a/vendor/knative.dev/serving/config/core/300-resources/service.yaml
++++ b/vendor/knative.dev/serving/config/core/300-resources/service.yaml
+@@ -449,6 +449,9 @@ spec:
+                                 description: 'SecurityContext defines the security options the container should be run with. If set, the fields of SecurityContext override the equivalent fields of PodSecurityContext. More info: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/'
+                                 type: object
+                                 properties:
++                                  allowPrivilegeEscalation:
++                                    description: 'AllowPrivilegeEscalation controls whether a process can gain more privileges than its parent process. This bool directly controls if the no_new_privs flag will be set on the container process. AllowPrivilegeEscalation is true always when the container is: 1) run as Privileged 2) has CAP_SYS_ADMIN Note that this field cannot be set when spec.os.name is windows.'
++                                    type: boolean
+                                   capabilities:
+                                     description: The capabilities to add/drop when running containers. Defaults to the default set of capabilities granted by the container runtime. Note that this field cannot be set when spec.os.name is windows.
+                                     type: object
+--
+2.29.2
+
