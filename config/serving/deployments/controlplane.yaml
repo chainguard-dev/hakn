@@ -121,7 +121,7 @@ spec:
           runAsNonRoot: true
           capabilities:
             drop:
-            - all
+            - ALL
 
         ports:
         - name: profiling
@@ -184,7 +184,7 @@ spec:
           runAsNonRoot: true
           capabilities:
             drop:
-            - all
+            - ALL
 
         ports:
         - name: profiling
