@@ -9,7 +9,7 @@ require (
 	istio.io/api v0.0.0-20210713195055-3a340e4f154e
 	k8s.io/api v0.25.4
 	k8s.io/apimachinery v0.25.4
-	k8s.io/client-go v0.25.2
+	k8s.io/client-go v0.25.4
 	knative.dev/caching v0.0.0-20221012041550-ce26e9293067
 	knative.dev/hack v0.0.0-20221018223210-cf1a127cfdcd
 	knative.dev/net-istio v0.35.0
