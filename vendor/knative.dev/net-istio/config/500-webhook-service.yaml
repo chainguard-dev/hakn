@@ -28,12 +28,12 @@ spec:
   # Define metrics and profiling for them to be accessible within service meshes.
   - name: http-metrics
     port: 9090
-    targetPort: metrics
+    targetPort: 9090
   - name: http-profiling
     port: 8008
-    targetPort: profiling
+    targetPort: 8008
   - name: https-webhook
     port: 443
-    targetPort: https-webhook
+    targetPort: 8443
   selector:
     app: net-istio-webhook

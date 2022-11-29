@@ -24,11 +24,10 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/google/go-cmp/cmp"
-	"google.golang.org/protobuf/testing/protocmp"
 	istiov1alpha3 "istio.io/api/networking/v1alpha3"
 	"istio.io/client-go/pkg/apis/networking/v1alpha3"
 	corev1 "k8s.io/api/core/v1"
+	"k8s.io/apimachinery/pkg/api/equality"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/apimachinery/pkg/util/sets"
@@ -189,8 +188,6 @@ func makeWildcardTLSGateways(originWildcardSecrets map[string]*corev1.Secret,
 				ServerCertificate: corev1.TLSCertKey,
 				PrivateKey:        corev1.TLSPrivateKeyKey,
 				CredentialName:    credentialName,
-				// TODO: Drop this when all supported Istio version uses TLS v1.2 by default.
-				MinProtocolVersion: istiov1alpha3.ServerTLSSettings_TLSV1_2,
 			},
 		}}
 		gvk := schema.GroupVersionKind{Version: "v1", Kind: "Secret"}
@@ -318,8 +315,6 @@ func MakeTLSServers(ing *v1alpha1.Ingress, ingressTLS []v1alpha1.IngressTLS, gat
 				ServerCertificate: corev1.TLSCertKey,
 				PrivateKey:        corev1.TLSPrivateKeyKey,
 				CredentialName:    credentialName,
-				// TODO: Drop this when all supported Istio version uses TLS v1.2 by default.
-				MinProtocolVersion: istiov1alpha3.ServerTLSSettings_TLSV1_2,
 			},
 		}
 	}
@@ -417,5 +412,5 @@ func UpdateGateway(gateway *v1alpha3.Gateway, want []*istiov1alpha3.Server, exis
 }
 
 func isPlaceHolderServer(server *istiov1alpha3.Server) bool {
-	return cmp.Equal(server, &placeholderServer, protocmp.Transform())
+	return equality.Semantic.DeepEqual(server, &placeholderServer)
 }

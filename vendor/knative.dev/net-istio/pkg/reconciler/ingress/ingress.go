@@ -22,9 +22,7 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/google/go-cmp/cmp"
 	"go.uber.org/zap"
-	"google.golang.org/protobuf/testing/protocmp"
 
 	istiov1alpha3 "istio.io/api/networking/v1alpha3"
 	"istio.io/client-go/pkg/apis/networking/v1alpha3"
@@ -48,6 +46,7 @@ import (
 	"knative.dev/pkg/logging"
 
 	corev1 "k8s.io/api/core/v1"
+	"k8s.io/apimachinery/pkg/api/equality"
 	apierrs "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/labels"
@@ -298,9 +297,9 @@ func (r *Reconciler) reconcileSystemGeneratedGateway(ctx context.Context, desire
 		}
 	} else if err != nil {
 		return err
-	} else if !cmp.Equal(existing.Spec.DeepCopy(), desired.Spec.DeepCopy(), protocmp.Transform()) {
+	} else if !equality.Semantic.DeepEqual(existing.Spec, desired.Spec) {
 		copy := existing.DeepCopy()
-		copy.Spec = *desired.Spec.DeepCopy()
+		copy.Spec = desired.Spec
 		if _, err := r.istioClientSet.NetworkingV1alpha3().Gateways(desired.Namespace).Update(ctx, copy, metav1.UpdateOptions{}); err != nil {
 			return err
 		}
@@ -417,7 +416,7 @@ func (r *Reconciler) reconcileIngressServers(ctx context.Context, ing *v1alpha1.
 }
 
 func (r *Reconciler) reconcileGateway(ctx context.Context, ing *v1alpha1.Ingress, gateway *v1alpha3.Gateway, existing []*istiov1alpha3.Server, desired []*istiov1alpha3.Server) error {
-	if cmp.Equal(existing, desired, protocmp.Transform()) {
+	if equality.Semantic.DeepEqual(existing, desired) {
 		return nil
 	}
 
@@ -522,7 +521,6 @@ func isIngressPublic(ing *v1alpha1.Ingress) bool {
 
 // areVirtualServicesReady checks if *all* the provided virtual services have a status, and if so if it's ready.
 // The return values are (hasStatus, ready), where:
-//
 //	hasStatus indicates whether all the virtualServices have a status field
 //	ready indicates whether they all have been reconciled and are able to receive requests
 func (r *Reconciler) areVirtualServicesReady(ctx context.Context, vses []*v1alpha3.VirtualService) (hasStatus, ready bool) {
@@ -549,7 +547,6 @@ func (r *Reconciler) areVirtualServicesReady(ctx context.Context, vses []*v1alph
 
 // isVirtualServiceReady checks if a virtual service has a status, and if so if it's ready.
 // The return values are (hasStatus, ready, err), where:
-//
 //	hasStatus indicates whether the virtualService has a status field
 //	ready indicates whether it's been reconciled and able to receive requests
 //	err indicates an error occurred while looking up the status.
@@ -566,7 +563,7 @@ func (r *Reconciler) isVirtualServiceReady(ctx context.Context, vs *v1alpha3.Vir
 		return false, false, fmt.Errorf("failed to get VirtualService %q: %w", vs.Name, err)
 	}
 
-	logger.Debugf("VirtualService %s, status: %#v", vs.Name, &currentState.Status)
+	logger.Debugf("VirtualService %s, status: %#v", vs.Name, currentState.Status)
 
 	if currentState.Generation != currentState.Status.ObservedGeneration {
 		if currentState.Status.ObservedGeneration == 0 &&

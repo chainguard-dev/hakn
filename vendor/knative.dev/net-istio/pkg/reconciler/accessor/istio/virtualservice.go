@@ -20,11 +20,9 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/google/go-cmp/cmp"
-	"google.golang.org/protobuf/testing/protocmp"
 	"istio.io/client-go/pkg/apis/networking/v1alpha3"
 	corev1 "k8s.io/api/core/v1"
-
+	"k8s.io/apimachinery/pkg/api/equality"
 	apierrs "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	istioclientset "knative.dev/net-istio/pkg/client/istio/clientset/versioned"
@@ -41,9 +39,9 @@ type VirtualServiceAccessor interface {
 }
 
 func hasDesiredDiff(current, desired *v1alpha3.VirtualService) bool {
-	return !cmp.Equal(current.Spec.DeepCopy(), desired.Spec.DeepCopy(), protocmp.Transform()) ||
-		!cmp.Equal(current.Labels, desired.Labels) ||
-		!cmp.Equal(current.Annotations, desired.Annotations)
+	return !equality.Semantic.DeepEqual(current.Spec, desired.Spec) ||
+		!equality.Semantic.DeepEqual(current.Labels, desired.Labels) ||
+		!equality.Semantic.DeepEqual(current.Annotations, desired.Annotations)
 }
 
 // ReconcileVirtualService reconciles VirtualService to the desired status.
@@ -75,7 +73,7 @@ func ReconcileVirtualService(ctx context.Context, owner kmeta.Accessor, desired 
 	} else if hasDesiredDiff(vs, desired) {
 		// Don't modify the informers copy
 		existing := vs.DeepCopy()
-		existing.Spec = *desired.Spec.DeepCopy()
+		existing.Spec = desired.Spec
 		existing.Labels = desired.Labels
 		existing.Annotations = desired.Annotations
 		vs, err = vsAccessor.GetIstioClient().NetworkingV1alpha3().VirtualServices(ns).Update(ctx, existing, metav1.UpdateOptions{})
