@@ -394,7 +394,7 @@ func buildServer(ctx context.Context, env config, transport http.RoundTripper, p
 	drainer := &pkghandler.Drainer{
 		QuietPeriod: drainSleepDuration,
 		// Add Activator probe header to the drainer so it can handle probes directly from activator
-		HealthCheckUAPrefixes: []string{netheader.ActivatorUserAgent},
+		HealthCheckUAPrefixes: []string{netheader.ActivatorUserAgent, netheader.AutoscalingUserAgent},
 		Inner:                 composedHandler,
 		HealthCheck:           health.ProbeHandler(probeContainer, tracingEnabled),
 	}
@@ -486,6 +486,7 @@ func buildAdminServer(ctx context.Context, logger *zap.SugaredLogger, drainer *p
 		w.WriteHeader(http.StatusOK)
 	})
 
+	//nolint:gosec // https://github.com/knative/serving/issues/13439
 	return &http.Server{
 		Addr:    ":" + strconv.Itoa(networking.QueueAdminPort),
 		Handler: adminMux,
@@ -495,6 +496,8 @@ func buildAdminServer(ctx context.Context, logger *zap.SugaredLogger, drainer *p
 func buildMetricsServer(protobufStatReporter *queue.ProtobufStatsReporter) *http.Server {
 	metricsMux := http.NewServeMux()
 	metricsMux.Handle("/metrics", queue.NewStatsHandler(protobufStatReporter))
+
+	//nolint:gosec // https://github.com/knative/serving/issues/13439
 	return &http.Server{
 		Addr:    ":" + strconv.Itoa(networking.AutoscalingQueueMetricsPort),
 		Handler: metricsMux,
