@@ -1105,7 +1105,7 @@ k8s.io/utils/net
 k8s.io/utils/pointer
 k8s.io/utils/strings/slices
 k8s.io/utils/trace
-# knative.dev/caching v0.0.0-20221012041550-ce26e9293067
+# knative.dev/caching v0.0.0-20221123133043-be1669c8b761
 ## explicit; go 1.18
 knative.dev/caching/config
 knative.dev/caching/pkg/apis/caching
