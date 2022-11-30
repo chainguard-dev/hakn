@@ -68,10 +68,11 @@ jobs:
         version: v0.12.0
 
     - name: Setup Cluster
-      uses: chainguard-dev/actions/setup-kind@81956faa618dba00755919ab67ddcee9231485d2
+      #uses: chainguard-dev/actions/setup-kind@81956faa618dba00755919ab67ddcee9231485d2
+      uses: chainguard-dev/actions/setup-kind@main
       id: kind
       with:
-        k8s-version: v1.23.x
+        k8s-version: v1.24.x
         registry-authority: registry.local:5000
 
     - name: Install hakn
