@@ -15,7 +15,9 @@ limitations under the License.
 */
 
 /*
+
 Package kpa implements a kubernetes controller which tracks revisions and
 notifies a callback interface.
+
 */
 package kpa
