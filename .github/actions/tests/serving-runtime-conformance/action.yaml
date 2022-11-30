@@ -12,6 +12,7 @@ runs:
       with:
         repository: knative/serving
         path: ./src/knative.dev/serving
+        refs: bd88e059b9050c49da4a03e0fc2a72d6eedea411
 
     - name: Upload test images
       working-directory: ./src/knative.dev/serving
