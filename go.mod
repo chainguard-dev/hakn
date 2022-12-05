@@ -5,16 +5,16 @@ go 1.19
 require (
 	github.com/google/go-cmp v0.5.9
 	github.com/hashicorp/golang-lru v0.6.0
-	go.uber.org/zap v1.23.0
-	istio.io/api v0.0.0-20221117195257-5cbad44e0b04
+	go.uber.org/zap v1.24.0
+	istio.io/api v0.0.0-20221128172210-2df01fb1b9e4
 	k8s.io/api v0.25.4
 	k8s.io/apimachinery v0.25.4
 	k8s.io/client-go v0.25.4
-	knative.dev/caching v0.0.0-20221123133043-be1669c8b761
-	knative.dev/hack v0.0.0-20221122182941-c12c1bfbd6d2
+	knative.dev/caching v0.0.0-20221202133217-538e1c5c88a6
+	knative.dev/hack v0.0.0-20221201154717-7233e77996f1
 	knative.dev/net-istio v0.35.1-0.20221129130114-345dc1bde289
-	knative.dev/networking v0.0.0-20221117015040-9b791e24e63a
-	knative.dev/pkg v0.0.0-20221123011842-b78020c16606
+	knative.dev/networking v0.0.0-20221202133217-891aac251fc2
+	knative.dev/pkg v0.0.0-20221123154742-05b694ec4d3a
 	knative.dev/serving v0.35.1
 )
 
