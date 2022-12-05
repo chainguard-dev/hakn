@@ -19,7 +19,7 @@ concurrency:
 jobs:
   kind-test:
     name: E2E Test
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     strategy:
       fail-fast: false # Keep running if one leg fails.
       matrix:
@@ -72,7 +72,7 @@ jobs:
       #uses: chainguard-dev/actions/setup-kind@main
       id: kind
       with:
-        k8s-version: v1.24.x
+        k8s-version: v1.23.x
         registry-authority: registry.local:5000
 
     - name: Install hakn
