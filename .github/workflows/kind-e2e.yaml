@@ -41,10 +41,10 @@ jobs:
       with:
         path: ./src/github.com/chainguard-dev/hakn
 
-    - uses: chainguard-dev/actions/setup-mirror@main
+    - uses: chainguard-dev/actions/setup-mirror@56e66c0634b48c44e34ec01f18bf0a8a24528880
 
     # https://github.com/mvdan/github-actions-golang#how-do-i-set-up-caching-between-builds
-    - uses: actions/cache@v3
+    - uses: actions/cache@9b0c1fce7a93df8e3bb8926b0d6e9d89e92f20a7
       with:
         # In order:
         # * Module download cache
@@ -82,7 +82,7 @@ jobs:
         function resource_blaster() {
           local REPO="${1}"
           local FILE="${2}"
-          curl -L -s "https://github.com/knative/${REPO}/releases/download/knative-v1.8.0/${FILE}" \
+          curl -L -s "https://github.com/knative/${REPO}/releases/download/knative-v1.7.0/${FILE}" \
             | yq e 'del(.spec.template.spec.containers[]?.resources)' - \
             `# Filter out empty objects that come out as {} b/c kubectl barfs` \
             | grep -v '^{}$'
@@ -104,7 +104,7 @@ jobs:
         # Wait for the controlplane to be up.
         kubectl rollout status --timeout=5m -n knative-serving statefulsets/controlplane
 
-    - uses: chainguard-dev/actions/setup-monitoring@main
+    - uses: chainguard-dev/actions/setup-monitoring@fa6353ebe00047c48807deb79a62197d4ba6cce6
 
     - uses: ./src/github.com/chainguard-dev/hakn/.github/actions/tests/dispatcher
       with:
@@ -112,4 +112,4 @@ jobs:
 
     - name: Collect diagnostics and upload
       if: ${{ failure() }}
-      uses: chainguard-dev/actions/kind-diag@main
+      uses: chainguard-dev/actions/kind-diag@fa6353ebe00047c48807deb79a62197d4ba6cce6
