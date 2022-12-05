@@ -84,10 +84,7 @@ func (ac *reconciler) Admit(ctx context.Context, request *admissionv1.AdmissionR
 		// below all overwrite `resp`, but the `defer` affords us one final
 		// crack at things.
 		defer func() {
-			resp.Warnings = make([]string, 0, len(warnings))
-			for _, w := range warnings {
-				resp.Warnings = append(resp.Warnings, w.Error())
-			}
+			resp.Warnings = []string{warnings.Error()}
 		}()
 	}
 	if errors != nil {
@@ -160,7 +157,7 @@ func (ac *reconciler) decodeRequestAndPrepareContext(
 	return ctx, newObj, nil
 }
 
-func validate(ctx context.Context, resource resourcesemantics.GenericCRD, req *admissionv1.AdmissionRequest) (err error, warn []error) { //nolint
+func validate(ctx context.Context, resource resourcesemantics.GenericCRD, req *admissionv1.AdmissionRequest) (err error, warn error) {
 	logger := logging.FromContext(ctx)
 
 	// Only run validation for supported create and update validation.
@@ -190,11 +187,7 @@ func validate(ctx context.Context, resource resourcesemantics.GenericCRD, req *a
 			err = errorResult
 		}
 		if warningResult := result.Filter(apis.WarningLevel); warningResult != nil {
-			ws := warningResult.WrappedErrors()
-			warn = make([]error, 0, len(ws))
-			for _, w := range ws {
-				warn = append(warn, w)
-			}
+			warn = warningResult
 		}
 	}
 	return err, warn

@@ -1105,7 +1105,7 @@ k8s.io/utils/net
 k8s.io/utils/pointer
 k8s.io/utils/strings/slices
 k8s.io/utils/trace
-# knative.dev/caching v0.0.0-20221202133217-538e1c5c88a6
+# knative.dev/caching v0.0.0-20221012041550-ce26e9293067
 ## explicit; go 1.18
 knative.dev/caching/config
 knative.dev/caching/pkg/apis/caching
@@ -1153,7 +1153,7 @@ knative.dev/net-istio/pkg/reconciler/ingress/resources
 knative.dev/net-istio/pkg/reconciler/ingress/resources/names
 knative.dev/net-istio/pkg/reconciler/serverlessservice
 knative.dev/net-istio/pkg/reconciler/serverlessservice/resources
-# knative.dev/networking v0.0.0-20221202133217-891aac251fc2
+# knative.dev/networking v0.0.0-20221117015040-9b791e24e63a
 ## explicit; go 1.18
 knative.dev/networking/config
 knative.dev/networking/pkg
@@ -1185,7 +1185,7 @@ knative.dev/networking/pkg/ingress
 knative.dev/networking/pkg/k8s
 knative.dev/networking/pkg/prober
 knative.dev/networking/pkg/status
-# knative.dev/pkg v0.0.0-20221123154742-05b694ec4d3a
+# knative.dev/pkg v0.0.0-20221123011842-b78020c16606
 ## explicit; go 1.18
 knative.dev/pkg/apis
 knative.dev/pkg/apis/duck
