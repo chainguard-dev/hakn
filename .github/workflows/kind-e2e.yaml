@@ -19,7 +19,9 @@ concurrency:
 jobs:
   kind-test:
     name: E2E Test
-    runs-on: ubuntu-latest
+    # Due to https://github.com/knative/serving/issues/13529,
+    # pin to 20.04 until conformance test updated to work with cgroupv2 on ubuntu-latest
+    runs-on: ubuntu-20.04
     strategy:
       fail-fast: false # Keep running if one leg fails.
       matrix:
