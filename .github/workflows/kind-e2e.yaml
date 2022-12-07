@@ -73,7 +73,7 @@ jobs:
       uses: chainguard-dev/actions/setup-kind@main
       id: kind
       with:
-        k8s-version: v1.23.x
+        k8s-version: v1.24.x
         registry-authority: registry.local:5000
 
     - name: Install hakn
@@ -83,7 +83,7 @@ jobs:
         function resource_blaster() {
           local REPO="${1}"
           local FILE="${2}"
-          curl -L -s "https://github.com/knative/${REPO}/releases/download/knative-v1.7.0/${FILE}" \
+          curl -L -s "https://github.com/knative/${REPO}/releases/download/knative-v1.8.0/${FILE}" \
             | yq e 'del(.spec.template.spec.containers[]?.resources)' - \
             `# Filter out empty objects that come out as {} b/c kubectl barfs` \
             | grep -v '^{}$'
