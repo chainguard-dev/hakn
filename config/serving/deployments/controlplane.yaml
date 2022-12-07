@@ -106,6 +106,8 @@ spec:
           value: config-observability
         - name: CONFIG_FEATURE_FLAGS_NAME
           value: config-features
+        - name: KUBERNETES_MIN_VERSION
+          value: "1.23.0"
 
         # TODO(https://github.com/knative/pkg/pull/953): Remove stackdriver specific config
         - name: METRICS_DOMAIN
@@ -169,6 +171,8 @@ spec:
           value: config-logging
         - name: CONFIG_OBSERVABILITY_NAME
           value: config-observability
+        - name: KUBERNETES_MIN_VERSION
+          value: "1.23.0"
 
         # TODO(https://github.com/knative/pkg/pull/953): Remove stackdriver specific config
         - name: METRICS_DOMAIN
