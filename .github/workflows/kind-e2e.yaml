@@ -73,7 +73,7 @@ jobs:
       uses: chainguard-dev/actions/setup-kind@main
       id: kind
       with:
-        k8s-version: v1.23.x
+        k8s-version: v1.24.x
         registry-authority: registry.local:5000
 
     - name: Install hakn
