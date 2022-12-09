@@ -15,7 +15,7 @@ require (
 	knative.dev/net-istio v0.35.1-0.20221129130114-345dc1bde289
 	knative.dev/networking v0.0.0-20221202133217-891aac251fc2
 	knative.dev/pkg v0.0.0-20221123154742-05b694ec4d3a
-	knative.dev/serving v0.35.2
+	knative.dev/serving v0.35.3
 )
 
 require (
