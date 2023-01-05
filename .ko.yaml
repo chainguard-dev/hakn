@@ -1,1 +1,1 @@
-defaultBaseImage: cgr.dev/chainguard/static
+defaultBaseImage: cgr.dev/chainguard/static:latest-glibc
