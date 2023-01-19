@@ -7,9 +7,9 @@ require (
 	github.com/hashicorp/golang-lru v0.6.0
 	go.uber.org/zap v1.24.0
 	istio.io/api v0.0.0-20221212180111-09895d694711
-	k8s.io/api v0.25.5
-	k8s.io/apimachinery v0.25.5
-	k8s.io/client-go v0.25.5
+	k8s.io/api v0.26.1
+	k8s.io/apimachinery v0.26.1
+	k8s.io/client-go v0.26.1
 	knative.dev/caching v0.0.0-20221209014017-0ea6b3f92fdc
 	knative.dev/hack v0.0.0-20221209013717-b9801b4f5a4d
 	knative.dev/net-istio v0.35.1-0.20221129130114-345dc1bde289
