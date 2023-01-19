@@ -8,7 +8,7 @@ require (
 	go.uber.org/zap v1.24.0
 	istio.io/api v0.0.0-20221212180111-09895d694711
 	k8s.io/api v0.25.5
-	k8s.io/apimachinery v0.25.5
+	k8s.io/apimachinery v0.26.1
 	k8s.io/client-go v0.25.5
 	knative.dev/caching v0.0.0-20221209014017-0ea6b3f92fdc
 	knative.dev/hack v0.0.0-20221209013717-b9801b4f5a4d
