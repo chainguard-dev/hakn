@@ -1107,7 +1107,7 @@ k8s.io/utils/net
 k8s.io/utils/pointer
 k8s.io/utils/strings/slices
 k8s.io/utils/trace
-# knative.dev/caching v0.0.0-20221209014017-0ea6b3f92fdc
+# knative.dev/caching v0.0.0-20230117184756-7a31fded064a
 ## explicit; go 1.18
 knative.dev/caching/config
 knative.dev/caching/pkg/apis/caching
@@ -1123,10 +1123,10 @@ knative.dev/caching/pkg/client/injection/client
 knative.dev/caching/pkg/client/injection/informers/caching/v1alpha1/image
 knative.dev/caching/pkg/client/injection/informers/factory
 knative.dev/caching/pkg/client/listers/caching/v1alpha1
-# knative.dev/control-protocol v0.0.0-20221017021456-3e2f8785943b
+# knative.dev/control-protocol v0.0.0-20230120194803-cffe2086fdab
 ## explicit; go 1.18
 knative.dev/control-protocol/pkg/certificates
-# knative.dev/hack v0.0.0-20221209013717-b9801b4f5a4d
+# knative.dev/hack v0.0.0-20230113013652-c7cfcb062de9
 ## explicit; go 1.18
 knative.dev/hack
 # knative.dev/net-istio v0.35.1-0.20221129130114-345dc1bde289
@@ -1155,7 +1155,7 @@ knative.dev/net-istio/pkg/reconciler/ingress/resources
 knative.dev/net-istio/pkg/reconciler/ingress/resources/names
 knative.dev/net-istio/pkg/reconciler/serverlessservice
 knative.dev/net-istio/pkg/reconciler/serverlessservice/resources
-# knative.dev/networking v0.0.0-20221209014918-383bb2f0a5a8
+# knative.dev/networking v0.0.0-20230123233838-db2bcbea2560
 ## explicit; go 1.18
 knative.dev/networking/config
 knative.dev/networking/pkg
@@ -1187,7 +1187,7 @@ knative.dev/networking/pkg/ingress
 knative.dev/networking/pkg/k8s
 knative.dev/networking/pkg/prober
 knative.dev/networking/pkg/status
-# knative.dev/pkg v0.0.0-20221209013515-911b435f02a1
+# knative.dev/pkg v0.0.0-20230117181655-247510c00e9d
 ## explicit; go 1.18
 knative.dev/pkg/apis
 knative.dev/pkg/apis/duck
@@ -1267,7 +1267,7 @@ knative.dev/pkg/webhook/resourcesemantics/defaulting
 knative.dev/pkg/webhook/resourcesemantics/validation
 knative.dev/pkg/webhook/testing
 knative.dev/pkg/websocket
-# knative.dev/serving v0.35.3
+# knative.dev/serving v0.36.0
 ## explicit; go 1.18
 knative.dev/serving/cmd/activator
 knative.dev/serving/cmd/autoscaler
