@@ -1037,8 +1037,8 @@ honnef.co/go/tools v0.0.1-2020.1.3/go.mod h1:X/FiERA/W4tHapMX5mGpAtMSVEeEUOyHaw9
 honnef.co/go/tools v0.0.1-2020.1.4/go.mod h1:X/FiERA/W4tHapMX5mGpAtMSVEeEUOyHaw9vFzvIQ3k=
 istio.io/api v0.0.0-20221212180111-09895d694711 h1:cSPlnd6clrp4UrPUos+HDCide9782r/NBudVHqjcnCc=
 istio.io/api v0.0.0-20221212180111-09895d694711/go.mod h1:oV64LW9BQmwkiP2KxXeOrktfTuLlHaV4ee3xPshNZuw=
-istio.io/client-go v1.16.0 h1:wIHRK9x1GbPm4AOeEMhHlpJL7uhNPhtVgzaxIGrIRGU=
-istio.io/client-go v1.16.0/go.mod h1:UV8SFeM2qNime5sobkr2m8oTCPxxVt9xCY4ol50U9YQ=
+istio.io/client-go v1.16.1 h1:xkCpqOL3KbuZINRcSlBqJzN+hB5Ov/Q1LsRpsyAkhI8=
+istio.io/client-go v1.16.1/go.mod h1:NT96qrYnZ7AcuKnuknH/3GI+tv9Qm6VhC2ZX2vRaKeg=
 k8s.io/api v0.25.5 h1:mqyHf7aoaYMpdvO87mqpol+Qnsmo+y09S0PMIXwiZKo=
 k8s.io/api v0.25.5/go.mod h1:RzplZX0Z8rV/WhSTfEvnyd91bBhBQTRWo85qBQwRmb8=
 k8s.io/apiextensions-apiserver v0.25.4 h1:7hu9pF+xikxQuQZ7/30z/qxIPZc2J1lFElPtr7f+B6U=
@@ -1064,8 +1064,8 @@ knative.dev/control-protocol v0.0.0-20230120194803-cffe2086fdab h1:h6eqN3GvBYgnG
 knative.dev/control-protocol v0.0.0-20230120194803-cffe2086fdab/go.mod h1:BPH2Zj2XHBrPKgTBNTxKiz6KMzc9Eyt1O7N7fMiVyfQ=
 knative.dev/hack v0.0.0-20230113013652-c7cfcb062de9 h1:CDa7s9KspEZqPhk7cN68ZypRLuAvSgr+knoOaXSsrHk=
 knative.dev/hack v0.0.0-20230113013652-c7cfcb062de9/go.mod h1:yk2OjGDsbEnQjfxdm0/HJKS2WqTLEFg/N6nUs6Rqx3Q=
-knative.dev/net-istio v0.35.1-0.20221129130114-345dc1bde289 h1:RPx7idYSbxQrpkuUj/4H7anVt+Ff2WBPP2Dz1LC2v1o=
-knative.dev/net-istio v0.35.1-0.20221129130114-345dc1bde289/go.mod h1:GuxrEUuzXOAZKYrS+RpXNndbOOPLfA8862E1pL8SuwI=
+knative.dev/net-istio v0.36.0 h1:n7NgRMXVlXjjVmEQU+VvORED9nMy+6AeSwvpIpIho3E=
+knative.dev/net-istio v0.36.0/go.mod h1:u9nYtDHxOSpKjRQYWRhkf4KTJHdB6YL0r6DjZj/DmII=
 knative.dev/networking v0.0.0-20230123233838-db2bcbea2560 h1:iprdS5tKTXtgV9dGryuwJJJTTdl5LusCHOelKdezR3I=
 knative.dev/networking v0.0.0-20230123233838-db2bcbea2560/go.mod h1:rn1yRurhkxmSFkpqs/YdG7b9DiYj0VlmLFzBdOQjpOo=
 knative.dev/pkg v0.0.0-20230117181655-247510c00e9d h1:pjKDcvHoMib8nRp56eISRmMj/pFMzJljnzvMvGCIReI=
