@@ -1064,8 +1064,8 @@ knative.dev/control-protocol v0.0.0-20230225001830-38d0f0c36190 h1:4bjh1OVVagpfq
 knative.dev/control-protocol v0.0.0-20230225001830-38d0f0c36190/go.mod h1:hWQtE8zOjV069yN4Nw+GbrRwASzoPAYaGlWQ1avavj4=
 knative.dev/hack v0.0.0-20230217102752-199139daec7e h1:eWgg59nZ5wZK1XMAK1Fiy4+LQSK6kuleM67TOJlSAx8=
 knative.dev/hack v0.0.0-20230217102752-199139daec7e/go.mod h1:yk2OjGDsbEnQjfxdm0/HJKS2WqTLEFg/N6nUs6Rqx3Q=
-knative.dev/net-istio v0.36.1 h1:xPXqnwlWJpHjtUStp4aCdXIennDuIJPu5rzJd1IVEcI=
-knative.dev/net-istio v0.36.1/go.mod h1:JjNarZjjbApOhBuD2k3BTH2zQCCcJyM5eXk4Ew9tGqA=
+knative.dev/net-istio v0.36.2 h1:Yp+t2kI31NNd7IBJiqRlbULX2C9KLUTfYs+nVlazSjc=
+knative.dev/net-istio v0.36.2/go.mod h1:iZlaQ0HvhadqjxXFaSMdTx7qRwdVLUU4MA9fTjcyZ/g=
 knative.dev/networking v0.0.0-20230225001731-5e096d63b0cb h1:RJsO4x2kqp2yIac9Av9Q+QqX40Y4WMuHNDkLLWciYZs=
 knative.dev/networking v0.0.0-20230225001731-5e096d63b0cb/go.mod h1:GLkeWEfzSf7L/WUTueRzzOcTgR04jf+3bXGw8vex2nM=
 knative.dev/pkg v0.0.0-20230224205330-75da922ef055 h1:VfKOAnbgJXJMz7n66yW7Rj6Sl2bQZng6RzvX4MMB2Jg=
