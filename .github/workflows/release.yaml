@@ -47,7 +47,7 @@ jobs:
       with:
         version: v0.12.0
 
-    - uses: sigstore/cosign-installer@main
+    - uses: sigstore/cosign-installer@c3667d99424e7e6047999fb6246c0da843953c65 # v3.0.1
 
     - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # v3
       with:
@@ -65,7 +65,7 @@ jobs:
                    --tags $(basename "${{ github.ref }}" ) \
                    -BRf config/serving > serving.yaml
 
-        COSIGN_EXPERIMENTAL=true cosign sign $(cat serving.images)
+        cosign sign --yes --timeout 5m $(cat serving.images)
 
     - name: Upload Release Asset
       id: upload-release-asset
