@@ -1,0 +1,22 @@
+# Copyright 2022 Chainguard, Inc.
+# SPDX-License-Identifier: Apache-2.0
+
+project_name: hakn
+
+before:
+  hooks:
+    - go mod tidy
+    - /bin/bash -c 'if [ -n "$(git --no-pager diff --exit-code go.mod go.sum)" ]; then exit 1; fi'
+    - make build-sign-image
+
+builds:
+  - skip: true
+
+changelog:
+  use: github-native
+
+release:
+  draft: true
+  extra_files:
+    - glob: "./serving.yaml"
+      name_template: serving.yaml

@@ -3,16 +3,13 @@
 
 on:
   push:
-    # Sequence of patterns matched against refs/tags
     tags:
-    - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
+      - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
 
-name: Create Release
+name: Release
 
 jobs:
   release:
-    needs: create-release
-    name: Release ko artifact and push to Github Container Registry
     runs-on: ubuntu-latest
 
     permissions:
@@ -21,44 +18,36 @@ jobs:
       contents: write
 
     steps:
-      - uses: actions/checkout@8f4b7f84864484a7bf31766abe9204da3cbe65b3 # v3
+      - uses: actions/checkout@8f4b7f84864484a7bf31766abe9204da3cbe65b3 # v3.5.0
         with:
           fetch-depth: 1
 
-      - uses: actions/setup-go@4d34df0c2316fe8122ab82dc22947d607c0c91f9 # v3
+      - uses: actions/setup-go@4d34df0c2316fe8122ab82dc22947d607c0c91f9 # v4.0.0
         with:
           go-version: 1.19
           check-latest: true
 
       # will install latest ko version and default login/configure
       # KO_DOCKER_REPO to ghcr.io
-      - uses: imjasonh/setup-ko@ace48d793556083a76f1e3e6068850c1f4a369aa # v0.5
+      - uses: ko-build/setup-ko@ace48d793556083a76f1e3e6068850c1f4a369aa # v0.6
         with:
           version: v0.13.0
 
       - uses: sigstore/cosign-installer@c3667d99424e7e6047999fb6246c0da843953c65 # v3.0.1
 
-      - name: Build, Sign and Publish images.
-        run: |
-          ko resolve --platform=linux/amd64,linux/arm64 \
-                     --image-refs=serving.images \
-                     --tags $(basename "${{ github.ref }}" ) \
-                     -BRf config/serving > serving.yaml
-
-          cosign sign --yes --timeout 5m $(cat serving.images)
-
-      - uses: softprops/action-gh-release@de2c0eb89ae2a093876385947365aca7b0e5f844 # v1
-        id: create_release
+      - name: Install GoReleaser
+        id: run-goreleaser
+        uses: goreleaser/goreleaser-action@f82d6c1c344bcacabba2c841718984797f664a6b # v4.2.0
         with:
-          tag_name: ${{ github.ref }}
-          name: Release ${{ github.ref }}
-          draft: false
-          prerelease: false
-          token: ${{ secrets.GITHUB_TOKEN }}
-          files: ./serving.yaml
+          install-only: true
+
+      - name: Run GoReleaser
+        run: make goreleaser
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Post failure notice to Slack
-        uses: rtCamp/action-slack-notify@v2.2.0
+        uses: rtCamp/action-slack-notify@12e36fc18b0689399306c2e0b3e0f2978b7f1ee7 # v2.2.0
         if: ${{ failure() }}
         env:
           SLACK_ICON: http://github.com/chainguard-dev.png?size=48
