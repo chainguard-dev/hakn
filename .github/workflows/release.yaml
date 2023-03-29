@@ -53,7 +53,7 @@ jobs:
           SLACK_ICON: http://github.com/chainguard-dev.png?size=48
           SLACK_USERNAME: guardian
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-          SLACK_CHANNEL: "@mattmoor" # DO NOT SUBMIT "eng"
+          SLACK_CHANNEL: "chainguard-enforce"
           SLACK_COLOR: '#8E1600'
           MSG_MINIMAL: 'true'
           SLACK_TITLE: Release ${{ github.ref }} failed
