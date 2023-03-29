@@ -10,22 +10,7 @@ on:
 name: Create Release
 
 jobs:
-  create-release:
-    name: Create the release
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@8f4b7f84864484a7bf31766abe9204da3cbe65b3 # v3
-      - uses: actions/create-release@v1
-        id: create_release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
-        with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
-          draft: false
-          prerelease: false
-
-  ko-resolve:
+  release:
     needs: create-release
     name: Release ko artifact and push to Github Container Registry
     runs-on: ubuntu-latest
@@ -36,58 +21,52 @@ jobs:
       contents: write
 
     steps:
-    - uses: actions/setup-go@4d34df0c2316fe8122ab82dc22947d607c0c91f9 # v3
-      with:
-        go-version: 1.19
-        check-latest: true
+      - uses: actions/checkout@8f4b7f84864484a7bf31766abe9204da3cbe65b3 # v3
+        with:
+          fetch-depth: 1
 
-    # will install latest ko version and default login/configure
-    # KO_DOCKER_REPO to ghcr.io
-    - uses: imjasonh/setup-ko@ace48d793556083a76f1e3e6068850c1f4a369aa # v0.5
-      with:
-        version: v0.12.0
+      - uses: actions/setup-go@4d34df0c2316fe8122ab82dc22947d607c0c91f9 # v3
+        with:
+          go-version: 1.19
+          check-latest: true
 
-    - uses: sigstore/cosign-installer@c3667d99424e7e6047999fb6246c0da843953c65 # v3.0.1
+      # will install latest ko version and default login/configure
+      # KO_DOCKER_REPO to ghcr.io
+      - uses: imjasonh/setup-ko@ace48d793556083a76f1e3e6068850c1f4a369aa # v0.5
+        with:
+          version: v0.13.0
 
-    - uses: actions/checkout@8f4b7f84864484a7bf31766abe9204da3cbe65b3 # v3
-      with:
-        fetch-depth: 1
+      - uses: sigstore/cosign-installer@c3667d99424e7e6047999fb6246c0da843953c65 # v3.0.1
 
-    - uses: bruceadams/get-release@v1.3.2
-      id: get_release_url
-      env:
-        GITHUB_TOKEN: ${{ github.token }}
+      - name: Build, Sign and Publish images.
+        run: |
+          ko resolve --platform=linux/amd64,linux/arm64 \
+                     --image-refs=serving.images \
+                     --tags $(basename "${{ github.ref }}" ) \
+                     -BRf config/serving > serving.yaml
 
-    - name: Build, Sign and Publish images.
-      run: |
-        ko resolve --platform=linux/amd64,linux/arm64 \
-                   --image-refs=serving.images \
-                   --tags $(basename "${{ github.ref }}" ) \
-                   -BRf config/serving > serving.yaml
+          cosign sign --yes --timeout 5m $(cat serving.images)
 
-        cosign sign --yes --timeout 5m $(cat serving.images)
+      - uses: softprops/action-gh-release@de2c0eb89ae2a093876385947365aca7b0e5f844 # v1
+        id: create_release
+        with:
+          tag_name: ${{ github.ref }}
+          name: Release ${{ github.ref }}
+          draft: false
+          prerelease: false
+          token: ${{ secrets.GITHUB_TOKEN }}
+          files: ./serving.yaml
 
-    - name: Upload Release Asset
-      id: upload-release-asset
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.get_release_url.outputs.upload_url }}
-        asset_path: ./serving.yaml
-        asset_name: serving.yaml
-        asset_content_type: text/plain
-
-    - name: Post failure notice to Slack
-      uses: rtCamp/action-slack-notify@v2.2.0
-      if: ${{ failure() }}
-      env:
-        SLACK_ICON: http://github.com/chainguard-dev.png?size=48
-        SLACK_USERNAME: guardian
-        SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-        SLACK_CHANNEL: "@mattmoor" # DO NOT SUBMIT "eng"
-        SLACK_COLOR: '#8E1600'
-        MSG_MINIMAL: 'true'
-        SLACK_TITLE: Release ${{ github.ref }} failed
-        SLACK_MESSAGE: |
-          For detailed logs: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+      - name: Post failure notice to Slack
+        uses: rtCamp/action-slack-notify@v2.2.0
+        if: ${{ failure() }}
+        env:
+          SLACK_ICON: http://github.com/chainguard-dev.png?size=48
+          SLACK_USERNAME: guardian
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_CHANNEL: "@mattmoor" # DO NOT SUBMIT "eng"
+          SLACK_COLOR: '#8E1600'
+          MSG_MINIMAL: 'true'
+          SLACK_TITLE: Release ${{ github.ref }} failed
+          SLACK_MESSAGE: |
+            For detailed logs: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
