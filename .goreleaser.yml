@@ -16,7 +16,6 @@ changelog:
   use: github-native
 
 release:
-  draft: true
   extra_files:
     - glob: "./serving.yaml"
       name_template: serving.yaml
