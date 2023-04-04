@@ -54,7 +54,7 @@ jobs:
         path: |
           ~/go/pkg/mod
           ~/.cache/go-build
-          ${{ inputs.kocache }}
+          ~/ko
         key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
         restore-keys: |
           ${{ runner.os }}-go-
@@ -67,13 +67,13 @@ jobs:
 
     - uses: imjasonh/setup-ko@ace48d793556083a76f1e3e6068850c1f4a369aa # v0.5
       with:
-        version: v0.12.0
+        version: v0.13.0
 
     - name: Setup Cluster
       uses: chainguard-dev/actions/setup-kind@main
       id: kind
       with:
-        k8s-version: v1.23.x
+        k8s-version: v1.24.x
         registry-authority: registry.local:5000
 
     - name: Install hakn
