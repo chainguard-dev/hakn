@@ -23,4 +23,5 @@ on:
 
 jobs:
   verify:
-    uses: knative/actions/.github/workflows/reusable-verify-codegen.yaml@main
+    # pin to a specific hash that uses go1.19 the main branch uses go1.20 and here we are using go1.19
+    uses: knative/actions/.github/workflows/reusable-verify-codegen.yaml@c739e0bf4e1d24034b87b9e85aa49555a87745b3
