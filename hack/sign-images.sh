@@ -8,8 +8,8 @@ set -o nounset
 set -o pipefail
 
 if [[ ! -f serving.images ]]; then
-    echo "serving.images not found"
-    exit 1
+  echo "serving.images not found"
+  exit 1
 fi
 
 echo "Signing cosign images using Keyless..."
