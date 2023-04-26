@@ -142,7 +142,7 @@ spec:
             memory: 40Mi
           limits:
             cpu: 300m
-            memory: 400Mi
+            memory: 500Mi
 
         env:
         - name: STATEFUL_CONTROLLER_ORDINAL
