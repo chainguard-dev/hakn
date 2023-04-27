@@ -45,6 +45,8 @@ func main() {
 		SecretName:  "webhook-certs",
 	})
 
+	ctx = sharedmain.WithHealthProbesDisabled(ctx)
+
 	sharedmain.MainWithConfig(ctx, "hakn-serving", injection.ParseAndGetRESTConfigOrDie(),
 		certificates.NewController,
 		newDefaultingAdmissionController,
