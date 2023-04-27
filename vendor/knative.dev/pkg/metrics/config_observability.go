@@ -71,10 +71,6 @@ type ObservabilityConfig struct {
 	// OpenCensus. "None" disables all backends.
 	RequestMetricsBackend string
 
-	// RequestMetricsReportingPeriodSeconds specifies the request metrics reporting period in sec at queue proxy, eg 1.
-	// If a zero or negative value is passed the default reporting period is used (10 secs).
-	RequestMetricsReportingPeriodSeconds int
-
 	// EnableProfiling indicates whether it is allowed to retrieve runtime profiling data from
 	// the pods via an HTTP server in the format expected by the pprof visualization tool.
 	EnableProfiling bool
@@ -118,12 +114,6 @@ func NewObservabilityConfigFromConfigMap(configMap *corev1.ConfigMap) (*Observab
 		return oc, nil
 	}
 
-	defaultRequestMetricsReportingPeriod, err := getDefaultRequestMetricsReportingPeriod(configMap.Data)
-	if err != nil {
-		return nil, err
-	}
-	oc.RequestMetricsReportingPeriodSeconds = defaultRequestMetricsReportingPeriod
-
 	if err := cm.Parse(configMap.Data,
 		cm.AsBool("logging.enable-var-log-collection", &oc.EnableVarLogCollection),
 		cm.AsString("logging.revision-url-template", &oc.LoggingURLTemplate),
@@ -131,7 +121,6 @@ func NewObservabilityConfigFromConfigMap(configMap *corev1.ConfigMap) (*Observab
 		cm.AsBool(EnableReqLogKey, &oc.EnableRequestLog),
 		cm.AsBool(EnableProbeReqLogKey, &oc.EnableProbeRequestLog),
 		cm.AsString("metrics.request-metrics-backend-destination", &oc.RequestMetricsBackend),
-		cm.AsInt("metrics.request-metrics-reporting-period-seconds", &oc.RequestMetricsReportingPeriodSeconds),
 		cm.AsBool("profiling.enable", &oc.EnableProfiling),
 		cm.AsString("metrics.opencensus-address", &oc.MetricsCollectorAddress),
 	); err != nil {
@@ -173,28 +162,4 @@ func ConfigMapName() string {
 		return cm
 	}
 	return "config-observability"
-}
-
-// Use the same as `metrics.reporting-period-seconds` for the default
-// of `metrics.request-metrics-reporting-period-seconds`
-func getDefaultRequestMetricsReportingPeriod(data map[string]string) (int, error) {
-	// Default backend is prometheus
-	period := defaultPrometheusReportingPeriod
-	if repStr := data[reportingPeriodKey]; repStr != "" {
-		repInt, err := strconv.Atoi(repStr)
-		if err != nil {
-			return -1, fmt.Errorf("invalid %s value %q", reportingPeriodKey, repStr)
-		}
-		period = repInt
-	} else {
-		if raw, ok := data["metrics.request-metrics-backend-destination"]; ok {
-			switch metricsBackend(raw) {
-			case prometheus:
-				period = defaultPrometheusReportingPeriod
-			case openCensus:
-				period = defaultOpenCensusReportingPeriod
-			}
-		}
-	}
-	return period, nil
 }

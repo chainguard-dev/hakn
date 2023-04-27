@@ -41,21 +41,19 @@ const (
 	DomainEnv = "METRICS_DOMAIN"
 
 	// The following keys are used to configure metrics reporting.
-	// See https://github.com/knative/serving/blob/main/config/core/configmaps/observability.yaml
+	// See https://github.com/knative/serving/blob/main/config/config-observability.yaml
 	// for details.
 	collectorAddressKey = "metrics.opencensus-address"
 	collectorSecureKey  = "metrics.opencensus-require-tls"
 	reportingPeriodKey  = "metrics.reporting-period-seconds"
 
-	defaultBackendEnvName            = "DEFAULT_METRICS_BACKEND"
-	defaultPrometheusPort            = 9090
-	defaultPrometheusReportingPeriod = 5
-	defaultOpenCensusReportingPeriod = 60
-	maxPrometheusPort                = 65535
-	minPrometheusPort                = 1024
-	defaultPrometheusHost            = "0.0.0.0"
-	prometheusPortEnvName            = "METRICS_PROMETHEUS_PORT"
-	prometheusHostEnvName            = "METRICS_PROMETHEUS_HOST"
+	defaultBackendEnvName = "DEFAULT_METRICS_BACKEND"
+	defaultPrometheusPort = 9090
+	maxPrometheusPort     = 65535
+	minPrometheusPort     = 1024
+	defaultPrometheusHost = "0.0.0.0"
+	prometheusPortEnvName = "METRICS_PROMETHEUS_PORT"
+	prometheusHostEnvName = "METRICS_PROMETHEUS_HOST"
 )
 
 var (
@@ -208,9 +206,9 @@ func createMetricsConfig(_ context.Context, ops ExporterOptions) (*metricsConfig
 	} else {
 		switch mc.backendDestination {
 		case openCensus:
-			mc.reportingPeriod = defaultOpenCensusReportingPeriod * time.Second
+			mc.reportingPeriod = time.Minute
 		case prometheus:
-			mc.reportingPeriod = defaultPrometheusReportingPeriod * time.Second
+			mc.reportingPeriod = 5 * time.Second
 		}
 	}
 	return &mc, nil

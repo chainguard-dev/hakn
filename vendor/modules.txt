@@ -1152,7 +1152,7 @@ knative.dev/caching/pkg/client/listers/caching/v1alpha1
 # knative.dev/control-protocol v0.0.0-20230225001830-38d0f0c36190
 ## explicit; go 1.18
 knative.dev/control-protocol/pkg/certificates
-# knative.dev/hack v0.0.0-20230417170854-f591fea109b3
+# knative.dev/hack v0.0.0-20230228173453-3de51aff69a3
 ## explicit; go 1.18
 knative.dev/hack
 # knative.dev/net-istio v0.36.2
@@ -1213,7 +1213,7 @@ knative.dev/networking/pkg/ingress
 knative.dev/networking/pkg/k8s
 knative.dev/networking/pkg/prober
 knative.dev/networking/pkg/status
-# knative.dev/pkg v0.0.0-20230420071539-300df436f953
+# knative.dev/pkg v0.0.0-20230306194819-b77a78c6c0ad
 ## explicit; go 1.18
 knative.dev/pkg/apis
 knative.dev/pkg/apis/duck
