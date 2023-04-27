@@ -11,10 +11,10 @@ require (
 	k8s.io/apimachinery v0.25.8
 	k8s.io/client-go v0.25.8
 	knative.dev/caching v0.0.0-20230225001731-71041a310e84
-	knative.dev/hack v0.0.0-20230228173453-3de51aff69a3
+	knative.dev/hack v0.0.0-20230217131352-f2f3107be156
 	knative.dev/net-istio v0.36.2
 	knative.dev/networking v0.0.0-20230225001731-5e096d63b0cb
-	knative.dev/pkg v0.0.0-20230306194819-b77a78c6c0ad
+	knative.dev/pkg v0.0.0-20230306154124-fd00e037d125
 	knative.dev/serving v0.36.3
 )
 
