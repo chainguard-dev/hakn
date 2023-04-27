@@ -646,17 +646,16 @@ gopkg.in/yaml.v2
 # gopkg.in/yaml.v3 v3.0.1
 ## explicit
 gopkg.in/yaml.v3
-# istio.io/api v0.0.0-20221212180111-09895d694711
+# istio.io/api v0.0.0-20230204131218-41d7951eb9e4
 ## explicit; go 1.18
 istio.io/api/analysis/v1alpha1
 istio.io/api/meta/v1alpha1
-istio.io/api/networking/v1alpha3
 istio.io/api/networking/v1beta1
 istio.io/api/type/v1beta1
-# istio.io/client-go v1.16.1
-## explicit; go 1.17
-istio.io/client-go/pkg/apis/networking/v1alpha3
-# k8s.io/api v0.25.8
+# istio.io/client-go v1.17.0
+## explicit; go 1.18
+istio.io/client-go/pkg/apis/networking/v1beta1
+# k8s.io/api v0.26.0 => k8s.io/api v0.25.8
 ## explicit; go 1.19
 k8s.io/api/admission/v1
 k8s.io/api/admissionregistration/v1
@@ -705,7 +704,7 @@ k8s.io/api/scheduling/v1beta1
 k8s.io/api/storage/v1
 k8s.io/api/storage/v1alpha1
 k8s.io/api/storage/v1beta1
-# k8s.io/apiextensions-apiserver v0.25.4
+# k8s.io/apiextensions-apiserver v0.25.4 => k8s.io/apiextensions-apiserver v0.25.8
 ## explicit; go 1.19
 k8s.io/apiextensions-apiserver/pkg/apis/apiextensions
 k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1
@@ -718,7 +717,7 @@ k8s.io/apiextensions-apiserver/pkg/client/clientset/clientset/typed/apiextension
 k8s.io/apiextensions-apiserver/pkg/client/clientset/clientset/typed/apiextensions/v1beta1
 k8s.io/apiextensions-apiserver/pkg/client/clientset/clientset/typed/apiextensions/v1beta1/fake
 k8s.io/apiextensions-apiserver/pkg/client/listers/apiextensions/v1
-# k8s.io/apimachinery v0.25.8
+# k8s.io/apimachinery v0.26.0 => k8s.io/apimachinery v0.25.8
 ## explicit; go 1.19
 k8s.io/apimachinery/pkg/api/equality
 k8s.io/apimachinery/pkg/api/errors
@@ -766,7 +765,7 @@ k8s.io/apimachinery/pkg/version
 k8s.io/apimachinery/pkg/watch
 k8s.io/apimachinery/third_party/forked/golang/json
 k8s.io/apimachinery/third_party/forked/golang/reflect
-# k8s.io/client-go v0.25.8
+# k8s.io/client-go v0.26.0 => k8s.io/client-go v0.25.8
 ## explicit; go 1.19
 k8s.io/client-go/applyconfigurations/admissionregistration/v1
 k8s.io/client-go/applyconfigurations/admissionregistration/v1beta1
@@ -1047,7 +1046,7 @@ k8s.io/client-go/util/homedir
 k8s.io/client-go/util/keyutil
 k8s.io/client-go/util/retry
 k8s.io/client-go/util/workqueue
-# k8s.io/code-generator v0.25.4
+# k8s.io/code-generator v0.25.8 => k8s.io/code-generator v0.25.8
 ## explicit; go 1.19
 k8s.io/code-generator
 k8s.io/code-generator/cmd/client-gen
@@ -1152,25 +1151,25 @@ knative.dev/caching/pkg/client/listers/caching/v1alpha1
 # knative.dev/control-protocol v0.0.0-20230225001830-38d0f0c36190
 ## explicit; go 1.18
 knative.dev/control-protocol/pkg/certificates
-# knative.dev/hack v0.0.0-20230217102752-199139daec7e
+# knative.dev/hack v0.0.0-20230417170854-f591fea109b3
 ## explicit; go 1.18
 knative.dev/hack
-# knative.dev/net-istio v0.36.2
+# knative.dev/net-istio v0.37.0
 ## explicit; go 1.18
 knative.dev/net-istio/config
 knative.dev/net-istio/pkg/client/istio/clientset/versioned
 knative.dev/net-istio/pkg/client/istio/clientset/versioned/scheme
-knative.dev/net-istio/pkg/client/istio/clientset/versioned/typed/networking/v1alpha3
+knative.dev/net-istio/pkg/client/istio/clientset/versioned/typed/networking/v1beta1
 knative.dev/net-istio/pkg/client/istio/informers/externalversions
 knative.dev/net-istio/pkg/client/istio/informers/externalversions/internalinterfaces
 knative.dev/net-istio/pkg/client/istio/informers/externalversions/networking
-knative.dev/net-istio/pkg/client/istio/informers/externalversions/networking/v1alpha3
+knative.dev/net-istio/pkg/client/istio/informers/externalversions/networking/v1beta1
 knative.dev/net-istio/pkg/client/istio/injection/client
 knative.dev/net-istio/pkg/client/istio/injection/informers/factory
-knative.dev/net-istio/pkg/client/istio/injection/informers/networking/v1alpha3/destinationrule
-knative.dev/net-istio/pkg/client/istio/injection/informers/networking/v1alpha3/gateway
-knative.dev/net-istio/pkg/client/istio/injection/informers/networking/v1alpha3/virtualservice
-knative.dev/net-istio/pkg/client/istio/listers/networking/v1alpha3
+knative.dev/net-istio/pkg/client/istio/injection/informers/networking/v1beta1/destinationrule
+knative.dev/net-istio/pkg/client/istio/injection/informers/networking/v1beta1/gateway
+knative.dev/net-istio/pkg/client/istio/injection/informers/networking/v1beta1/virtualservice
+knative.dev/net-istio/pkg/client/istio/listers/networking/v1beta1
 knative.dev/net-istio/pkg/reconciler/accessor
 knative.dev/net-istio/pkg/reconciler/accessor/core
 knative.dev/net-istio/pkg/reconciler/accessor/istio
@@ -1181,7 +1180,7 @@ knative.dev/net-istio/pkg/reconciler/ingress/resources
 knative.dev/net-istio/pkg/reconciler/ingress/resources/names
 knative.dev/net-istio/pkg/reconciler/serverlessservice
 knative.dev/net-istio/pkg/reconciler/serverlessservice/resources
-# knative.dev/networking v0.0.0-20230225001731-5e096d63b0cb
+# knative.dev/networking v0.0.0-20230419144338-e5d04e805e50
 ## explicit; go 1.18
 knative.dev/networking/config
 knative.dev/networking/pkg
@@ -1213,7 +1212,7 @@ knative.dev/networking/pkg/ingress
 knative.dev/networking/pkg/k8s
 knative.dev/networking/pkg/prober
 knative.dev/networking/pkg/status
-# knative.dev/pkg v0.0.0-20230224205330-75da922ef055
+# knative.dev/pkg v0.0.0-20230418073056-dfad48eaa5d0
 ## explicit; go 1.18
 knative.dev/pkg/apis
 knative.dev/pkg/apis/duck
@@ -1419,3 +1418,8 @@ sigs.k8s.io/structured-merge-diff/v4/value
 # sigs.k8s.io/yaml v1.3.0
 ## explicit; go 1.12
 sigs.k8s.io/yaml
+# k8s.io/api => k8s.io/api v0.25.8
+# k8s.io/apiextensions-apiserver => k8s.io/apiextensions-apiserver v0.25.8
+# k8s.io/apimachinery => k8s.io/apimachinery v0.25.8
+# k8s.io/client-go => k8s.io/client-go v0.25.8
+# k8s.io/code-generator => k8s.io/code-generator v0.25.8
