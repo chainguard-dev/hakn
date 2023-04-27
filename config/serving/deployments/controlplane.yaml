@@ -154,7 +154,7 @@ spec:
         - name: STATEFUL_SERVICE_PROTOCOL
           value: "ws"
         - name: STATEFUL_SERVICE_PORT
-          value: "8080"
+          value: "8081"
         - name: POD_NAME
           valueFrom:
             fieldRef:
@@ -194,17 +194,17 @@ spec:
         - name: profiling
           containerPort: 8011
         - name: websocket
-          containerPort: 8080
+          containerPort: 8081
 
         readinessProbe:
           httpGet:
-            port: 8080
+            port: 8081
             httpHeaders:
             - name: k-kubelet-probe
               value: "autoscaler"
         livenessProbe:
           httpGet:
-            port: 8080
+            port: 8081
             httpHeaders:
             - name: k-kubelet-probe
               value: "autoscaler"
@@ -234,8 +234,8 @@ spec:
     port: 443
     targetPort: 8443
   - name: http
-    port: 8080
-    targetPort: 8080
+    port: 8081
+    targetPort: 8081
   selector:
     app: controlplane
 
@@ -249,8 +249,8 @@ spec:
   clusterIP: None
   ports:
   - name: http
-    port: 8080
-    targetPort: 8080
+    port: 8081
+    targetPort: 8081
   selector:
     app: controlplane
 
