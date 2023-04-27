@@ -43,7 +43,6 @@ import (
 )
 
 const certVolumeName = "server-certs"
-const concurrencyStateHook = "concurrency-state-hook"
 
 var (
 	varLogVolume = corev1.Volume{
@@ -179,12 +178,6 @@ func makePodSpec(rev *v1.Revision, cfg *config.Config) (*corev1.PodSpec, error) 
 		extraVolumes = append(extraVolumes, varPodInfoVolume)
 	}
 
-	// If concurrencyStateEndpoint is enabled, add the serviceAccountToken to QP via a projected volume
-	if cfg.Deployment.ConcurrencyStateEndpoint != "" {
-		// add token for audience "concurrency-state-hook" under filename ConcurrencyStateTokenFilename
-		addToken(tokenVolume, queue.ConcurrencyStateTokenFilename, concurrencyStateHook, ptr.Int64(600))
-	}
-
 	audiences := make([]string, 0, len(cfg.Deployment.QueueSidecarTokenAudiences))
 	for k := range cfg.Deployment.QueueSidecarTokenAudiences {
 		audiences = append(audiences, k)
@@ -202,7 +195,7 @@ func makePodSpec(rev *v1.Revision, cfg *config.Config) (*corev1.PodSpec, error) 
 
 	if cfg.Network.InternalEncryption {
 		queueContainer.VolumeMounts = append(queueContainer.VolumeMounts, varCertVolumeMount)
-		extraVolumes = append(extraVolumes, certVolume(rev.Namespace+"-"+networking.ServingCertName))
+		extraVolumes = append(extraVolumes, certVolume(networking.ServingCertName))
 	}
 
 	podSpec := BuildPodSpec(rev, append(BuildUserContainers(rev), *queueContainer), cfg)
