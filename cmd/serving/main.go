@@ -39,6 +39,8 @@ func main() {
 
 	ctx := informerfiltering.GetContextWithFilteringLabelSelector(signals.NewContext())
 
+	ctx = sharedmain.WithHealthProbesDisabled(ctx)
+
 	ctx = webhook.WithOptions(ctx, webhook.Options{
 		ServiceName: "webhook",
 		Port:        8443,
