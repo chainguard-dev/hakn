@@ -24,7 +24,7 @@ import (
 	errors "errors"
 	fmt "fmt"
 
-	v1beta1 "istio.io/client-go/pkg/apis/networking/v1beta1"
+	v1alpha3 "istio.io/client-go/pkg/apis/networking/v1alpha3"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	unstructured "k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	runtime "k8s.io/apimachinery/pkg/runtime"
@@ -35,7 +35,7 @@ import (
 	dynamic "k8s.io/client-go/dynamic"
 	rest "k8s.io/client-go/rest"
 	versioned "knative.dev/net-istio/pkg/client/istio/clientset/versioned"
-	typednetworkingv1beta1 "knative.dev/net-istio/pkg/client/istio/clientset/versioned/typed/networking/v1beta1"
+	typednetworkingv1alpha3 "knative.dev/net-istio/pkg/client/istio/clientset/versioned/typed/networking/v1alpha3"
 	injection "knative.dev/pkg/injection"
 	dynamicclient "knative.dev/pkg/injection/clients/dynamicclient"
 	logging "knative.dev/pkg/logging"
@@ -96,26 +96,26 @@ func convert(from interface{}, to runtime.Object) error {
 	return nil
 }
 
-// NetworkingV1beta1 retrieves the NetworkingV1beta1Client
-func (w *wrapClient) NetworkingV1beta1() typednetworkingv1beta1.NetworkingV1beta1Interface {
-	return &wrapNetworkingV1beta1{
+// NetworkingV1alpha3 retrieves the NetworkingV1alpha3Client
+func (w *wrapClient) NetworkingV1alpha3() typednetworkingv1alpha3.NetworkingV1alpha3Interface {
+	return &wrapNetworkingV1alpha3{
 		dyn: w.dyn,
 	}
 }
 
-type wrapNetworkingV1beta1 struct {
+type wrapNetworkingV1alpha3 struct {
 	dyn dynamic.Interface
 }
 
-func (w *wrapNetworkingV1beta1) RESTClient() rest.Interface {
+func (w *wrapNetworkingV1alpha3) RESTClient() rest.Interface {
 	panic("RESTClient called on dynamic client!")
 }
 
-func (w *wrapNetworkingV1beta1) DestinationRules(namespace string) typednetworkingv1beta1.DestinationRuleInterface {
-	return &wrapNetworkingV1beta1DestinationRuleImpl{
+func (w *wrapNetworkingV1alpha3) DestinationRules(namespace string) typednetworkingv1alpha3.DestinationRuleInterface {
+	return &wrapNetworkingV1alpha3DestinationRuleImpl{
 		dyn: w.dyn.Resource(schema.GroupVersionResource{
 			Group:    "networking.istio.io",
-			Version:  "v1beta1",
+			Version:  "v1alpha3",
 			Resource: "destinationrules",
 		}),
 
@@ -123,18 +123,18 @@ func (w *wrapNetworkingV1beta1) DestinationRules(namespace string) typednetworki
 	}
 }
 
-type wrapNetworkingV1beta1DestinationRuleImpl struct {
+type wrapNetworkingV1alpha3DestinationRuleImpl struct {
 	dyn dynamic.NamespaceableResourceInterface
 
 	namespace string
 }
 
-var _ typednetworkingv1beta1.DestinationRuleInterface = (*wrapNetworkingV1beta1DestinationRuleImpl)(nil)
+var _ typednetworkingv1alpha3.DestinationRuleInterface = (*wrapNetworkingV1alpha3DestinationRuleImpl)(nil)
 
-func (w *wrapNetworkingV1beta1DestinationRuleImpl) Create(ctx context.Context, in *v1beta1.DestinationRule, opts v1.CreateOptions) (*v1beta1.DestinationRule, error) {
+func (w *wrapNetworkingV1alpha3DestinationRuleImpl) Create(ctx context.Context, in *v1alpha3.DestinationRule, opts v1.CreateOptions) (*v1alpha3.DestinationRule, error) {
 	in.SetGroupVersionKind(schema.GroupVersionKind{
 		Group:   "networking.istio.io",
-		Version: "v1beta1",
+		Version: "v1alpha3",
 		Kind:    "DestinationRule",
 	})
 	uo := &unstructured.Unstructured{}
@@ -145,61 +145,61 @@ func (w *wrapNetworkingV1beta1DestinationRuleImpl) Create(ctx context.Context, i
 	if err != nil {
 		return nil, err
 	}
-	out := &v1beta1.DestinationRule{}
+	out := &v1alpha3.DestinationRule{}
 	if err := convert(uo, out); err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (w *wrapNetworkingV1beta1DestinationRuleImpl) Delete(ctx context.Context, name string, opts v1.DeleteOptions) error {
+func (w *wrapNetworkingV1alpha3DestinationRuleImpl) Delete(ctx context.Context, name string, opts v1.DeleteOptions) error {
 	return w.dyn.Namespace(w.namespace).Delete(ctx, name, opts)
 }
 
-func (w *wrapNetworkingV1beta1DestinationRuleImpl) DeleteCollection(ctx context.Context, opts v1.DeleteOptions, listOpts v1.ListOptions) error {
+func (w *wrapNetworkingV1alpha3DestinationRuleImpl) DeleteCollection(ctx context.Context, opts v1.DeleteOptions, listOpts v1.ListOptions) error {
 	return w.dyn.Namespace(w.namespace).DeleteCollection(ctx, opts, listOpts)
 }
 
-func (w *wrapNetworkingV1beta1DestinationRuleImpl) Get(ctx context.Context, name string, opts v1.GetOptions) (*v1beta1.DestinationRule, error) {
+func (w *wrapNetworkingV1alpha3DestinationRuleImpl) Get(ctx context.Context, name string, opts v1.GetOptions) (*v1alpha3.DestinationRule, error) {
 	uo, err := w.dyn.Namespace(w.namespace).Get(ctx, name, opts)
 	if err != nil {
 		return nil, err
 	}
-	out := &v1beta1.DestinationRule{}
+	out := &v1alpha3.DestinationRule{}
 	if err := convert(uo, out); err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (w *wrapNetworkingV1beta1DestinationRuleImpl) List(ctx context.Context, opts v1.ListOptions) (*v1beta1.DestinationRuleList, error) {
+func (w *wrapNetworkingV1alpha3DestinationRuleImpl) List(ctx context.Context, opts v1.ListOptions) (*v1alpha3.DestinationRuleList, error) {
 	uo, err := w.dyn.Namespace(w.namespace).List(ctx, opts)
 	if err != nil {
 		return nil, err
 	}
-	out := &v1beta1.DestinationRuleList{}
+	out := &v1alpha3.DestinationRuleList{}
 	if err := convert(uo, out); err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (w *wrapNetworkingV1beta1DestinationRuleImpl) Patch(ctx context.Context, name string, pt types.PatchType, data []byte, opts v1.PatchOptions, subresources ...string) (result *v1beta1.DestinationRule, err error) {
+func (w *wrapNetworkingV1alpha3DestinationRuleImpl) Patch(ctx context.Context, name string, pt types.PatchType, data []byte, opts v1.PatchOptions, subresources ...string) (result *v1alpha3.DestinationRule, err error) {
 	uo, err := w.dyn.Namespace(w.namespace).Patch(ctx, name, pt, data, opts)
 	if err != nil {
 		return nil, err
 	}
-	out := &v1beta1.DestinationRule{}
+	out := &v1alpha3.DestinationRule{}
 	if err := convert(uo, out); err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (w *wrapNetworkingV1beta1DestinationRuleImpl) Update(ctx context.Context, in *v1beta1.DestinationRule, opts v1.UpdateOptions) (*v1beta1.DestinationRule, error) {
+func (w *wrapNetworkingV1alpha3DestinationRuleImpl) Update(ctx context.Context, in *v1alpha3.DestinationRule, opts v1.UpdateOptions) (*v1alpha3.DestinationRule, error) {
 	in.SetGroupVersionKind(schema.GroupVersionKind{
 		Group:   "networking.istio.io",
-		Version: "v1beta1",
+		Version: "v1alpha3",
 		Kind:    "DestinationRule",
 	})
 	uo := &unstructured.Unstructured{}
@@ -210,17 +210,17 @@ func (w *wrapNetworkingV1beta1DestinationRuleImpl) Update(ctx context.Context, i
 	if err != nil {
 		return nil, err
 	}
-	out := &v1beta1.DestinationRule{}
+	out := &v1alpha3.DestinationRule{}
 	if err := convert(uo, out); err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (w *wrapNetworkingV1beta1DestinationRuleImpl) UpdateStatus(ctx context.Context, in *v1beta1.DestinationRule, opts v1.UpdateOptions) (*v1beta1.DestinationRule, error) {
+func (w *wrapNetworkingV1alpha3DestinationRuleImpl) UpdateStatus(ctx context.Context, in *v1alpha3.DestinationRule, opts v1.UpdateOptions) (*v1alpha3.DestinationRule, error) {
 	in.SetGroupVersionKind(schema.GroupVersionKind{
 		Group:   "networking.istio.io",
-		Version: "v1beta1",
+		Version: "v1alpha3",
 		Kind:    "DestinationRule",
 	})
 	uo := &unstructured.Unstructured{}
@@ -231,22 +231,153 @@ func (w *wrapNetworkingV1beta1DestinationRuleImpl) UpdateStatus(ctx context.Cont
 	if err != nil {
 		return nil, err
 	}
-	out := &v1beta1.DestinationRule{}
+	out := &v1alpha3.DestinationRule{}
 	if err := convert(uo, out); err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (w *wrapNetworkingV1beta1DestinationRuleImpl) Watch(ctx context.Context, opts v1.ListOptions) (watch.Interface, error) {
+func (w *wrapNetworkingV1alpha3DestinationRuleImpl) Watch(ctx context.Context, opts v1.ListOptions) (watch.Interface, error) {
 	return nil, errors.New("NYI: Watch")
 }
 
-func (w *wrapNetworkingV1beta1) Gateways(namespace string) typednetworkingv1beta1.GatewayInterface {
-	return &wrapNetworkingV1beta1GatewayImpl{
+func (w *wrapNetworkingV1alpha3) EnvoyFilters(namespace string) typednetworkingv1alpha3.EnvoyFilterInterface {
+	return &wrapNetworkingV1alpha3EnvoyFilterImpl{
 		dyn: w.dyn.Resource(schema.GroupVersionResource{
 			Group:    "networking.istio.io",
-			Version:  "v1beta1",
+			Version:  "v1alpha3",
+			Resource: "envoyfilters",
+		}),
+
+		namespace: namespace,
+	}
+}
+
+type wrapNetworkingV1alpha3EnvoyFilterImpl struct {
+	dyn dynamic.NamespaceableResourceInterface
+
+	namespace string
+}
+
+var _ typednetworkingv1alpha3.EnvoyFilterInterface = (*wrapNetworkingV1alpha3EnvoyFilterImpl)(nil)
+
+func (w *wrapNetworkingV1alpha3EnvoyFilterImpl) Create(ctx context.Context, in *v1alpha3.EnvoyFilter, opts v1.CreateOptions) (*v1alpha3.EnvoyFilter, error) {
+	in.SetGroupVersionKind(schema.GroupVersionKind{
+		Group:   "networking.istio.io",
+		Version: "v1alpha3",
+		Kind:    "EnvoyFilter",
+	})
+	uo := &unstructured.Unstructured{}
+	if err := convert(in, uo); err != nil {
+		return nil, err
+	}
+	uo, err := w.dyn.Namespace(w.namespace).Create(ctx, uo, opts)
+	if err != nil {
+		return nil, err
+	}
+	out := &v1alpha3.EnvoyFilter{}
+	if err := convert(uo, out); err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (w *wrapNetworkingV1alpha3EnvoyFilterImpl) Delete(ctx context.Context, name string, opts v1.DeleteOptions) error {
+	return w.dyn.Namespace(w.namespace).Delete(ctx, name, opts)
+}
+
+func (w *wrapNetworkingV1alpha3EnvoyFilterImpl) DeleteCollection(ctx context.Context, opts v1.DeleteOptions, listOpts v1.ListOptions) error {
+	return w.dyn.Namespace(w.namespace).DeleteCollection(ctx, opts, listOpts)
+}
+
+func (w *wrapNetworkingV1alpha3EnvoyFilterImpl) Get(ctx context.Context, name string, opts v1.GetOptions) (*v1alpha3.EnvoyFilter, error) {
+	uo, err := w.dyn.Namespace(w.namespace).Get(ctx, name, opts)
+	if err != nil {
+		return nil, err
+	}
+	out := &v1alpha3.EnvoyFilter{}
+	if err := convert(uo, out); err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (w *wrapNetworkingV1alpha3EnvoyFilterImpl) List(ctx context.Context, opts v1.ListOptions) (*v1alpha3.EnvoyFilterList, error) {
+	uo, err := w.dyn.Namespace(w.namespace).List(ctx, opts)
+	if err != nil {
+		return nil, err
+	}
+	out := &v1alpha3.EnvoyFilterList{}
+	if err := convert(uo, out); err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (w *wrapNetworkingV1alpha3EnvoyFilterImpl) Patch(ctx context.Context, name string, pt types.PatchType, data []byte, opts v1.PatchOptions, subresources ...string) (result *v1alpha3.EnvoyFilter, err error) {
+	uo, err := w.dyn.Namespace(w.namespace).Patch(ctx, name, pt, data, opts)
+	if err != nil {
+		return nil, err
+	}
+	out := &v1alpha3.EnvoyFilter{}
+	if err := convert(uo, out); err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (w *wrapNetworkingV1alpha3EnvoyFilterImpl) Update(ctx context.Context, in *v1alpha3.EnvoyFilter, opts v1.UpdateOptions) (*v1alpha3.EnvoyFilter, error) {
+	in.SetGroupVersionKind(schema.GroupVersionKind{
+		Group:   "networking.istio.io",
+		Version: "v1alpha3",
+		Kind:    "EnvoyFilter",
+	})
+	uo := &unstructured.Unstructured{}
+	if err := convert(in, uo); err != nil {
+		return nil, err
+	}
+	uo, err := w.dyn.Namespace(w.namespace).Update(ctx, uo, opts)
+	if err != nil {
+		return nil, err
+	}
+	out := &v1alpha3.EnvoyFilter{}
+	if err := convert(uo, out); err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (w *wrapNetworkingV1alpha3EnvoyFilterImpl) UpdateStatus(ctx context.Context, in *v1alpha3.EnvoyFilter, opts v1.UpdateOptions) (*v1alpha3.EnvoyFilter, error) {
+	in.SetGroupVersionKind(schema.GroupVersionKind{
+		Group:   "networking.istio.io",
+		Version: "v1alpha3",
+		Kind:    "EnvoyFilter",
+	})
+	uo := &unstructured.Unstructured{}
+	if err := convert(in, uo); err != nil {
+		return nil, err
+	}
+	uo, err := w.dyn.Namespace(w.namespace).UpdateStatus(ctx, uo, opts)
+	if err != nil {
+		return nil, err
+	}
+	out := &v1alpha3.EnvoyFilter{}
+	if err := convert(uo, out); err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (w *wrapNetworkingV1alpha3EnvoyFilterImpl) Watch(ctx context.Context, opts v1.ListOptions) (watch.Interface, error) {
+	return nil, errors.New("NYI: Watch")
+}
+
+func (w *wrapNetworkingV1alpha3) Gateways(namespace string) typednetworkingv1alpha3.GatewayInterface {
+	return &wrapNetworkingV1alpha3GatewayImpl{
+		dyn: w.dyn.Resource(schema.GroupVersionResource{
+			Group:    "networking.istio.io",
+			Version:  "v1alpha3",
 			Resource: "gateways",
 		}),
 
@@ -254,18 +385,18 @@ func (w *wrapNetworkingV1beta1) Gateways(namespace string) typednetworkingv1beta
 	}
 }
 
-type wrapNetworkingV1beta1GatewayImpl struct {
+type wrapNetworkingV1alpha3GatewayImpl struct {
 	dyn dynamic.NamespaceableResourceInterface
 
 	namespace string
 }
 
-var _ typednetworkingv1beta1.GatewayInterface = (*wrapNetworkingV1beta1GatewayImpl)(nil)
+var _ typednetworkingv1alpha3.GatewayInterface = (*wrapNetworkingV1alpha3GatewayImpl)(nil)
 
-func (w *wrapNetworkingV1beta1GatewayImpl) Create(ctx context.Context, in *v1beta1.Gateway, opts v1.CreateOptions) (*v1beta1.Gateway, error) {
+func (w *wrapNetworkingV1alpha3GatewayImpl) Create(ctx context.Context, in *v1alpha3.Gateway, opts v1.CreateOptions) (*v1alpha3.Gateway, error) {
 	in.SetGroupVersionKind(schema.GroupVersionKind{
 		Group:   "networking.istio.io",
-		Version: "v1beta1",
+		Version: "v1alpha3",
 		Kind:    "Gateway",
 	})
 	uo := &unstructured.Unstructured{}
@@ -276,61 +407,61 @@ func (w *wrapNetworkingV1beta1GatewayImpl) Create(ctx context.Context, in *v1bet
 	if err != nil {
 		return nil, err
 	}
-	out := &v1beta1.Gateway{}
+	out := &v1alpha3.Gateway{}
 	if err := convert(uo, out); err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (w *wrapNetworkingV1beta1GatewayImpl) Delete(ctx context.Context, name string, opts v1.DeleteOptions) error {
+func (w *wrapNetworkingV1alpha3GatewayImpl) Delete(ctx context.Context, name string, opts v1.DeleteOptions) error {
 	return w.dyn.Namespace(w.namespace).Delete(ctx, name, opts)
 }
 
-func (w *wrapNetworkingV1beta1GatewayImpl) DeleteCollection(ctx context.Context, opts v1.DeleteOptions, listOpts v1.ListOptions) error {
+func (w *wrapNetworkingV1alpha3GatewayImpl) DeleteCollection(ctx context.Context, opts v1.DeleteOptions, listOpts v1.ListOptions) error {
 	return w.dyn.Namespace(w.namespace).DeleteCollection(ctx, opts, listOpts)
 }
 
-func (w *wrapNetworkingV1beta1GatewayImpl) Get(ctx context.Context, name string, opts v1.GetOptions) (*v1beta1.Gateway, error) {
+func (w *wrapNetworkingV1alpha3GatewayImpl) Get(ctx context.Context, name string, opts v1.GetOptions) (*v1alpha3.Gateway, error) {
 	uo, err := w.dyn.Namespace(w.namespace).Get(ctx, name, opts)
 	if err != nil {
 		return nil, err
 	}
-	out := &v1beta1.Gateway{}
+	out := &v1alpha3.Gateway{}
 	if err := convert(uo, out); err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (w *wrapNetworkingV1beta1GatewayImpl) List(ctx context.Context, opts v1.ListOptions) (*v1beta1.GatewayList, error) {
+func (w *wrapNetworkingV1alpha3GatewayImpl) List(ctx context.Context, opts v1.ListOptions) (*v1alpha3.GatewayList, error) {
 	uo, err := w.dyn.Namespace(w.namespace).List(ctx, opts)
 	if err != nil {
 		return nil, err
 	}
-	out := &v1beta1.GatewayList{}
+	out := &v1alpha3.GatewayList{}
 	if err := convert(uo, out); err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (w *wrapNetworkingV1beta1GatewayImpl) Patch(ctx context.Context, name string, pt types.PatchType, data []byte, opts v1.PatchOptions, subresources ...string) (result *v1beta1.Gateway, err error) {
+func (w *wrapNetworkingV1alpha3GatewayImpl) Patch(ctx context.Context, name string, pt types.PatchType, data []byte, opts v1.PatchOptions, subresources ...string) (result *v1alpha3.Gateway, err error) {
 	uo, err := w.dyn.Namespace(w.namespace).Patch(ctx, name, pt, data, opts)
 	if err != nil {
 		return nil, err
 	}
-	out := &v1beta1.Gateway{}
+	out := &v1alpha3.Gateway{}
 	if err := convert(uo, out); err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (w *wrapNetworkingV1beta1GatewayImpl) Update(ctx context.Context, in *v1beta1.Gateway, opts v1.UpdateOptions) (*v1beta1.Gateway, error) {
+func (w *wrapNetworkingV1alpha3GatewayImpl) Update(ctx context.Context, in *v1alpha3.Gateway, opts v1.UpdateOptions) (*v1alpha3.Gateway, error) {
 	in.SetGroupVersionKind(schema.GroupVersionKind{
 		Group:   "networking.istio.io",
-		Version: "v1beta1",
+		Version: "v1alpha3",
 		Kind:    "Gateway",
 	})
 	uo := &unstructured.Unstructured{}
@@ -341,17 +472,17 @@ func (w *wrapNetworkingV1beta1GatewayImpl) Update(ctx context.Context, in *v1bet
 	if err != nil {
 		return nil, err
 	}
-	out := &v1beta1.Gateway{}
+	out := &v1alpha3.Gateway{}
 	if err := convert(uo, out); err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (w *wrapNetworkingV1beta1GatewayImpl) UpdateStatus(ctx context.Context, in *v1beta1.Gateway, opts v1.UpdateOptions) (*v1beta1.Gateway, error) {
+func (w *wrapNetworkingV1alpha3GatewayImpl) UpdateStatus(ctx context.Context, in *v1alpha3.Gateway, opts v1.UpdateOptions) (*v1alpha3.Gateway, error) {
 	in.SetGroupVersionKind(schema.GroupVersionKind{
 		Group:   "networking.istio.io",
-		Version: "v1beta1",
+		Version: "v1alpha3",
 		Kind:    "Gateway",
 	})
 	uo := &unstructured.Unstructured{}
@@ -362,153 +493,22 @@ func (w *wrapNetworkingV1beta1GatewayImpl) UpdateStatus(ctx context.Context, in 
 	if err != nil {
 		return nil, err
 	}
-	out := &v1beta1.Gateway{}
+	out := &v1alpha3.Gateway{}
 	if err := convert(uo, out); err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (w *wrapNetworkingV1beta1GatewayImpl) Watch(ctx context.Context, opts v1.ListOptions) (watch.Interface, error) {
+func (w *wrapNetworkingV1alpha3GatewayImpl) Watch(ctx context.Context, opts v1.ListOptions) (watch.Interface, error) {
 	return nil, errors.New("NYI: Watch")
 }
 
-func (w *wrapNetworkingV1beta1) ProxyConfigs(namespace string) typednetworkingv1beta1.ProxyConfigInterface {
-	return &wrapNetworkingV1beta1ProxyConfigImpl{
+func (w *wrapNetworkingV1alpha3) ServiceEntries(namespace string) typednetworkingv1alpha3.ServiceEntryInterface {
+	return &wrapNetworkingV1alpha3ServiceEntryImpl{
 		dyn: w.dyn.Resource(schema.GroupVersionResource{
 			Group:    "networking.istio.io",
-			Version:  "v1beta1",
-			Resource: "proxyconfigs",
-		}),
-
-		namespace: namespace,
-	}
-}
-
-type wrapNetworkingV1beta1ProxyConfigImpl struct {
-	dyn dynamic.NamespaceableResourceInterface
-
-	namespace string
-}
-
-var _ typednetworkingv1beta1.ProxyConfigInterface = (*wrapNetworkingV1beta1ProxyConfigImpl)(nil)
-
-func (w *wrapNetworkingV1beta1ProxyConfigImpl) Create(ctx context.Context, in *v1beta1.ProxyConfig, opts v1.CreateOptions) (*v1beta1.ProxyConfig, error) {
-	in.SetGroupVersionKind(schema.GroupVersionKind{
-		Group:   "networking.istio.io",
-		Version: "v1beta1",
-		Kind:    "ProxyConfig",
-	})
-	uo := &unstructured.Unstructured{}
-	if err := convert(in, uo); err != nil {
-		return nil, err
-	}
-	uo, err := w.dyn.Namespace(w.namespace).Create(ctx, uo, opts)
-	if err != nil {
-		return nil, err
-	}
-	out := &v1beta1.ProxyConfig{}
-	if err := convert(uo, out); err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (w *wrapNetworkingV1beta1ProxyConfigImpl) Delete(ctx context.Context, name string, opts v1.DeleteOptions) error {
-	return w.dyn.Namespace(w.namespace).Delete(ctx, name, opts)
-}
-
-func (w *wrapNetworkingV1beta1ProxyConfigImpl) DeleteCollection(ctx context.Context, opts v1.DeleteOptions, listOpts v1.ListOptions) error {
-	return w.dyn.Namespace(w.namespace).DeleteCollection(ctx, opts, listOpts)
-}
-
-func (w *wrapNetworkingV1beta1ProxyConfigImpl) Get(ctx context.Context, name string, opts v1.GetOptions) (*v1beta1.ProxyConfig, error) {
-	uo, err := w.dyn.Namespace(w.namespace).Get(ctx, name, opts)
-	if err != nil {
-		return nil, err
-	}
-	out := &v1beta1.ProxyConfig{}
-	if err := convert(uo, out); err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (w *wrapNetworkingV1beta1ProxyConfigImpl) List(ctx context.Context, opts v1.ListOptions) (*v1beta1.ProxyConfigList, error) {
-	uo, err := w.dyn.Namespace(w.namespace).List(ctx, opts)
-	if err != nil {
-		return nil, err
-	}
-	out := &v1beta1.ProxyConfigList{}
-	if err := convert(uo, out); err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (w *wrapNetworkingV1beta1ProxyConfigImpl) Patch(ctx context.Context, name string, pt types.PatchType, data []byte, opts v1.PatchOptions, subresources ...string) (result *v1beta1.ProxyConfig, err error) {
-	uo, err := w.dyn.Namespace(w.namespace).Patch(ctx, name, pt, data, opts)
-	if err != nil {
-		return nil, err
-	}
-	out := &v1beta1.ProxyConfig{}
-	if err := convert(uo, out); err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (w *wrapNetworkingV1beta1ProxyConfigImpl) Update(ctx context.Context, in *v1beta1.ProxyConfig, opts v1.UpdateOptions) (*v1beta1.ProxyConfig, error) {
-	in.SetGroupVersionKind(schema.GroupVersionKind{
-		Group:   "networking.istio.io",
-		Version: "v1beta1",
-		Kind:    "ProxyConfig",
-	})
-	uo := &unstructured.Unstructured{}
-	if err := convert(in, uo); err != nil {
-		return nil, err
-	}
-	uo, err := w.dyn.Namespace(w.namespace).Update(ctx, uo, opts)
-	if err != nil {
-		return nil, err
-	}
-	out := &v1beta1.ProxyConfig{}
-	if err := convert(uo, out); err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (w *wrapNetworkingV1beta1ProxyConfigImpl) UpdateStatus(ctx context.Context, in *v1beta1.ProxyConfig, opts v1.UpdateOptions) (*v1beta1.ProxyConfig, error) {
-	in.SetGroupVersionKind(schema.GroupVersionKind{
-		Group:   "networking.istio.io",
-		Version: "v1beta1",
-		Kind:    "ProxyConfig",
-	})
-	uo := &unstructured.Unstructured{}
-	if err := convert(in, uo); err != nil {
-		return nil, err
-	}
-	uo, err := w.dyn.Namespace(w.namespace).UpdateStatus(ctx, uo, opts)
-	if err != nil {
-		return nil, err
-	}
-	out := &v1beta1.ProxyConfig{}
-	if err := convert(uo, out); err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (w *wrapNetworkingV1beta1ProxyConfigImpl) Watch(ctx context.Context, opts v1.ListOptions) (watch.Interface, error) {
-	return nil, errors.New("NYI: Watch")
-}
-
-func (w *wrapNetworkingV1beta1) ServiceEntries(namespace string) typednetworkingv1beta1.ServiceEntryInterface {
-	return &wrapNetworkingV1beta1ServiceEntryImpl{
-		dyn: w.dyn.Resource(schema.GroupVersionResource{
-			Group:    "networking.istio.io",
-			Version:  "v1beta1",
+			Version:  "v1alpha3",
 			Resource: "serviceentries",
 		}),
 
@@ -516,18 +516,18 @@ func (w *wrapNetworkingV1beta1) ServiceEntries(namespace string) typednetworking
 	}
 }
 
-type wrapNetworkingV1beta1ServiceEntryImpl struct {
+type wrapNetworkingV1alpha3ServiceEntryImpl struct {
 	dyn dynamic.NamespaceableResourceInterface
 
 	namespace string
 }
 
-var _ typednetworkingv1beta1.ServiceEntryInterface = (*wrapNetworkingV1beta1ServiceEntryImpl)(nil)
+var _ typednetworkingv1alpha3.ServiceEntryInterface = (*wrapNetworkingV1alpha3ServiceEntryImpl)(nil)
 
-func (w *wrapNetworkingV1beta1ServiceEntryImpl) Create(ctx context.Context, in *v1beta1.ServiceEntry, opts v1.CreateOptions) (*v1beta1.ServiceEntry, error) {
+func (w *wrapNetworkingV1alpha3ServiceEntryImpl) Create(ctx context.Context, in *v1alpha3.ServiceEntry, opts v1.CreateOptions) (*v1alpha3.ServiceEntry, error) {
 	in.SetGroupVersionKind(schema.GroupVersionKind{
 		Group:   "networking.istio.io",
-		Version: "v1beta1",
+		Version: "v1alpha3",
 		Kind:    "ServiceEntry",
 	})
 	uo := &unstructured.Unstructured{}
@@ -538,61 +538,61 @@ func (w *wrapNetworkingV1beta1ServiceEntryImpl) Create(ctx context.Context, in *
 	if err != nil {
 		return nil, err
 	}
-	out := &v1beta1.ServiceEntry{}
+	out := &v1alpha3.ServiceEntry{}
 	if err := convert(uo, out); err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (w *wrapNetworkingV1beta1ServiceEntryImpl) Delete(ctx context.Context, name string, opts v1.DeleteOptions) error {
+func (w *wrapNetworkingV1alpha3ServiceEntryImpl) Delete(ctx context.Context, name string, opts v1.DeleteOptions) error {
 	return w.dyn.Namespace(w.namespace).Delete(ctx, name, opts)
 }
 
-func (w *wrapNetworkingV1beta1ServiceEntryImpl) DeleteCollection(ctx context.Context, opts v1.DeleteOptions, listOpts v1.ListOptions) error {
+func (w *wrapNetworkingV1alpha3ServiceEntryImpl) DeleteCollection(ctx context.Context, opts v1.DeleteOptions, listOpts v1.ListOptions) error {
 	return w.dyn.Namespace(w.namespace).DeleteCollection(ctx, opts, listOpts)
 }
 
-func (w *wrapNetworkingV1beta1ServiceEntryImpl) Get(ctx context.Context, name string, opts v1.GetOptions) (*v1beta1.ServiceEntry, error) {
+func (w *wrapNetworkingV1alpha3ServiceEntryImpl) Get(ctx context.Context, name string, opts v1.GetOptions) (*v1alpha3.ServiceEntry, error) {
 	uo, err := w.dyn.Namespace(w.namespace).Get(ctx, name, opts)
 	if err != nil {
 		return nil, err
 	}
-	out := &v1beta1.ServiceEntry{}
+	out := &v1alpha3.ServiceEntry{}
 	if err := convert(uo, out); err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (w *wrapNetworkingV1beta1ServiceEntryImpl) List(ctx context.Context, opts v1.ListOptions) (*v1beta1.ServiceEntryList, error) {
+func (w *wrapNetworkingV1alpha3ServiceEntryImpl) List(ctx context.Context, opts v1.ListOptions) (*v1alpha3.ServiceEntryList, error) {
 	uo, err := w.dyn.Namespace(w.namespace).List(ctx, opts)
 	if err != nil {
 		return nil, err
 	}
-	out := &v1beta1.ServiceEntryList{}
+	out := &v1alpha3.ServiceEntryList{}
 	if err := convert(uo, out); err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (w *wrapNetworkingV1beta1ServiceEntryImpl) Patch(ctx context.Context, name string, pt types.PatchType, data []byte, opts v1.PatchOptions, subresources ...string) (result *v1beta1.ServiceEntry, err error) {
+func (w *wrapNetworkingV1alpha3ServiceEntryImpl) Patch(ctx context.Context, name string, pt types.PatchType, data []byte, opts v1.PatchOptions, subresources ...string) (result *v1alpha3.ServiceEntry, err error) {
 	uo, err := w.dyn.Namespace(w.namespace).Patch(ctx, name, pt, data, opts)
 	if err != nil {
 		return nil, err
 	}
-	out := &v1beta1.ServiceEntry{}
+	out := &v1alpha3.ServiceEntry{}
 	if err := convert(uo, out); err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (w *wrapNetworkingV1beta1ServiceEntryImpl) Update(ctx context.Context, in *v1beta1.ServiceEntry, opts v1.UpdateOptions) (*v1beta1.ServiceEntry, error) {
+func (w *wrapNetworkingV1alpha3ServiceEntryImpl) Update(ctx context.Context, in *v1alpha3.ServiceEntry, opts v1.UpdateOptions) (*v1alpha3.ServiceEntry, error) {
 	in.SetGroupVersionKind(schema.GroupVersionKind{
 		Group:   "networking.istio.io",
-		Version: "v1beta1",
+		Version: "v1alpha3",
 		Kind:    "ServiceEntry",
 	})
 	uo := &unstructured.Unstructured{}
@@ -603,17 +603,17 @@ func (w *wrapNetworkingV1beta1ServiceEntryImpl) Update(ctx context.Context, in *
 	if err != nil {
 		return nil, err
 	}
-	out := &v1beta1.ServiceEntry{}
+	out := &v1alpha3.ServiceEntry{}
 	if err := convert(uo, out); err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (w *wrapNetworkingV1beta1ServiceEntryImpl) UpdateStatus(ctx context.Context, in *v1beta1.ServiceEntry, opts v1.UpdateOptions) (*v1beta1.ServiceEntry, error) {
+func (w *wrapNetworkingV1alpha3ServiceEntryImpl) UpdateStatus(ctx context.Context, in *v1alpha3.ServiceEntry, opts v1.UpdateOptions) (*v1alpha3.ServiceEntry, error) {
 	in.SetGroupVersionKind(schema.GroupVersionKind{
 		Group:   "networking.istio.io",
-		Version: "v1beta1",
+		Version: "v1alpha3",
 		Kind:    "ServiceEntry",
 	})
 	uo := &unstructured.Unstructured{}
@@ -624,22 +624,22 @@ func (w *wrapNetworkingV1beta1ServiceEntryImpl) UpdateStatus(ctx context.Context
 	if err != nil {
 		return nil, err
 	}
-	out := &v1beta1.ServiceEntry{}
+	out := &v1alpha3.ServiceEntry{}
 	if err := convert(uo, out); err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (w *wrapNetworkingV1beta1ServiceEntryImpl) Watch(ctx context.Context, opts v1.ListOptions) (watch.Interface, error) {
+func (w *wrapNetworkingV1alpha3ServiceEntryImpl) Watch(ctx context.Context, opts v1.ListOptions) (watch.Interface, error) {
 	return nil, errors.New("NYI: Watch")
 }
 
-func (w *wrapNetworkingV1beta1) Sidecars(namespace string) typednetworkingv1beta1.SidecarInterface {
-	return &wrapNetworkingV1beta1SidecarImpl{
+func (w *wrapNetworkingV1alpha3) Sidecars(namespace string) typednetworkingv1alpha3.SidecarInterface {
+	return &wrapNetworkingV1alpha3SidecarImpl{
 		dyn: w.dyn.Resource(schema.GroupVersionResource{
 			Group:    "networking.istio.io",
-			Version:  "v1beta1",
+			Version:  "v1alpha3",
 			Resource: "sidecars",
 		}),
 
@@ -647,18 +647,18 @@ func (w *wrapNetworkingV1beta1) Sidecars(namespace string) typednetworkingv1beta
 	}
 }
 
-type wrapNetworkingV1beta1SidecarImpl struct {
+type wrapNetworkingV1alpha3SidecarImpl struct {
 	dyn dynamic.NamespaceableResourceInterface
 
 	namespace string
 }
 
-var _ typednetworkingv1beta1.SidecarInterface = (*wrapNetworkingV1beta1SidecarImpl)(nil)
+var _ typednetworkingv1alpha3.SidecarInterface = (*wrapNetworkingV1alpha3SidecarImpl)(nil)
 
-func (w *wrapNetworkingV1beta1SidecarImpl) Create(ctx context.Context, in *v1beta1.Sidecar, opts v1.CreateOptions) (*v1beta1.Sidecar, error) {
+func (w *wrapNetworkingV1alpha3SidecarImpl) Create(ctx context.Context, in *v1alpha3.Sidecar, opts v1.CreateOptions) (*v1alpha3.Sidecar, error) {
 	in.SetGroupVersionKind(schema.GroupVersionKind{
 		Group:   "networking.istio.io",
-		Version: "v1beta1",
+		Version: "v1alpha3",
 		Kind:    "Sidecar",
 	})
 	uo := &unstructured.Unstructured{}
@@ -669,61 +669,61 @@ func (w *wrapNetworkingV1beta1SidecarImpl) Create(ctx context.Context, in *v1bet
 	if err != nil {
 		return nil, err
 	}
-	out := &v1beta1.Sidecar{}
+	out := &v1alpha3.Sidecar{}
 	if err := convert(uo, out); err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (w *wrapNetworkingV1beta1SidecarImpl) Delete(ctx context.Context, name string, opts v1.DeleteOptions) error {
+func (w *wrapNetworkingV1alpha3SidecarImpl) Delete(ctx context.Context, name string, opts v1.DeleteOptions) error {
 	return w.dyn.Namespace(w.namespace).Delete(ctx, name, opts)
 }
 
-func (w *wrapNetworkingV1beta1SidecarImpl) DeleteCollection(ctx context.Context, opts v1.DeleteOptions, listOpts v1.ListOptions) error {
+func (w *wrapNetworkingV1alpha3SidecarImpl) DeleteCollection(ctx context.Context, opts v1.DeleteOptions, listOpts v1.ListOptions) error {
 	return w.dyn.Namespace(w.namespace).DeleteCollection(ctx, opts, listOpts)
 }
 
-func (w *wrapNetworkingV1beta1SidecarImpl) Get(ctx context.Context, name string, opts v1.GetOptions) (*v1beta1.Sidecar, error) {
+func (w *wrapNetworkingV1alpha3SidecarImpl) Get(ctx context.Context, name string, opts v1.GetOptions) (*v1alpha3.Sidecar, error) {
 	uo, err := w.dyn.Namespace(w.namespace).Get(ctx, name, opts)
 	if err != nil {
 		return nil, err
 	}
-	out := &v1beta1.Sidecar{}
+	out := &v1alpha3.Sidecar{}
 	if err := convert(uo, out); err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (w *wrapNetworkingV1beta1SidecarImpl) List(ctx context.Context, opts v1.ListOptions) (*v1beta1.SidecarList, error) {
+func (w *wrapNetworkingV1alpha3SidecarImpl) List(ctx context.Context, opts v1.ListOptions) (*v1alpha3.SidecarList, error) {
 	uo, err := w.dyn.Namespace(w.namespace).List(ctx, opts)
 	if err != nil {
 		return nil, err
 	}
-	out := &v1beta1.SidecarList{}
+	out := &v1alpha3.SidecarList{}
 	if err := convert(uo, out); err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (w *wrapNetworkingV1beta1SidecarImpl) Patch(ctx context.Context, name string, pt types.PatchType, data []byte, opts v1.PatchOptions, subresources ...string) (result *v1beta1.Sidecar, err error) {
+func (w *wrapNetworkingV1alpha3SidecarImpl) Patch(ctx context.Context, name string, pt types.PatchType, data []byte, opts v1.PatchOptions, subresources ...string) (result *v1alpha3.Sidecar, err error) {
 	uo, err := w.dyn.Namespace(w.namespace).Patch(ctx, name, pt, data, opts)
 	if err != nil {
 		return nil, err
 	}
-	out := &v1beta1.Sidecar{}
+	out := &v1alpha3.Sidecar{}
 	if err := convert(uo, out); err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (w *wrapNetworkingV1beta1SidecarImpl) Update(ctx context.Context, in *v1beta1.Sidecar, opts v1.UpdateOptions) (*v1beta1.Sidecar, error) {
+func (w *wrapNetworkingV1alpha3SidecarImpl) Update(ctx context.Context, in *v1alpha3.Sidecar, opts v1.UpdateOptions) (*v1alpha3.Sidecar, error) {
 	in.SetGroupVersionKind(schema.GroupVersionKind{
 		Group:   "networking.istio.io",
-		Version: "v1beta1",
+		Version: "v1alpha3",
 		Kind:    "Sidecar",
 	})
 	uo := &unstructured.Unstructured{}
@@ -734,17 +734,17 @@ func (w *wrapNetworkingV1beta1SidecarImpl) Update(ctx context.Context, in *v1bet
 	if err != nil {
 		return nil, err
 	}
-	out := &v1beta1.Sidecar{}
+	out := &v1alpha3.Sidecar{}
 	if err := convert(uo, out); err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (w *wrapNetworkingV1beta1SidecarImpl) UpdateStatus(ctx context.Context, in *v1beta1.Sidecar, opts v1.UpdateOptions) (*v1beta1.Sidecar, error) {
+func (w *wrapNetworkingV1alpha3SidecarImpl) UpdateStatus(ctx context.Context, in *v1alpha3.Sidecar, opts v1.UpdateOptions) (*v1alpha3.Sidecar, error) {
 	in.SetGroupVersionKind(schema.GroupVersionKind{
 		Group:   "networking.istio.io",
-		Version: "v1beta1",
+		Version: "v1alpha3",
 		Kind:    "Sidecar",
 	})
 	uo := &unstructured.Unstructured{}
@@ -755,22 +755,22 @@ func (w *wrapNetworkingV1beta1SidecarImpl) UpdateStatus(ctx context.Context, in 
 	if err != nil {
 		return nil, err
 	}
-	out := &v1beta1.Sidecar{}
+	out := &v1alpha3.Sidecar{}
 	if err := convert(uo, out); err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (w *wrapNetworkingV1beta1SidecarImpl) Watch(ctx context.Context, opts v1.ListOptions) (watch.Interface, error) {
+func (w *wrapNetworkingV1alpha3SidecarImpl) Watch(ctx context.Context, opts v1.ListOptions) (watch.Interface, error) {
 	return nil, errors.New("NYI: Watch")
 }
 
-func (w *wrapNetworkingV1beta1) VirtualServices(namespace string) typednetworkingv1beta1.VirtualServiceInterface {
-	return &wrapNetworkingV1beta1VirtualServiceImpl{
+func (w *wrapNetworkingV1alpha3) VirtualServices(namespace string) typednetworkingv1alpha3.VirtualServiceInterface {
+	return &wrapNetworkingV1alpha3VirtualServiceImpl{
 		dyn: w.dyn.Resource(schema.GroupVersionResource{
 			Group:    "networking.istio.io",
-			Version:  "v1beta1",
+			Version:  "v1alpha3",
 			Resource: "virtualservices",
 		}),
 
@@ -778,18 +778,18 @@ func (w *wrapNetworkingV1beta1) VirtualServices(namespace string) typednetworkin
 	}
 }
 
-type wrapNetworkingV1beta1VirtualServiceImpl struct {
+type wrapNetworkingV1alpha3VirtualServiceImpl struct {
 	dyn dynamic.NamespaceableResourceInterface
 
 	namespace string
 }
 
-var _ typednetworkingv1beta1.VirtualServiceInterface = (*wrapNetworkingV1beta1VirtualServiceImpl)(nil)
+var _ typednetworkingv1alpha3.VirtualServiceInterface = (*wrapNetworkingV1alpha3VirtualServiceImpl)(nil)
 
-func (w *wrapNetworkingV1beta1VirtualServiceImpl) Create(ctx context.Context, in *v1beta1.VirtualService, opts v1.CreateOptions) (*v1beta1.VirtualService, error) {
+func (w *wrapNetworkingV1alpha3VirtualServiceImpl) Create(ctx context.Context, in *v1alpha3.VirtualService, opts v1.CreateOptions) (*v1alpha3.VirtualService, error) {
 	in.SetGroupVersionKind(schema.GroupVersionKind{
 		Group:   "networking.istio.io",
-		Version: "v1beta1",
+		Version: "v1alpha3",
 		Kind:    "VirtualService",
 	})
 	uo := &unstructured.Unstructured{}
@@ -800,61 +800,61 @@ func (w *wrapNetworkingV1beta1VirtualServiceImpl) Create(ctx context.Context, in
 	if err != nil {
 		return nil, err
 	}
-	out := &v1beta1.VirtualService{}
+	out := &v1alpha3.VirtualService{}
 	if err := convert(uo, out); err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (w *wrapNetworkingV1beta1VirtualServiceImpl) Delete(ctx context.Context, name string, opts v1.DeleteOptions) error {
+func (w *wrapNetworkingV1alpha3VirtualServiceImpl) Delete(ctx context.Context, name string, opts v1.DeleteOptions) error {
 	return w.dyn.Namespace(w.namespace).Delete(ctx, name, opts)
 }
 
-func (w *wrapNetworkingV1beta1VirtualServiceImpl) DeleteCollection(ctx context.Context, opts v1.DeleteOptions, listOpts v1.ListOptions) error {
+func (w *wrapNetworkingV1alpha3VirtualServiceImpl) DeleteCollection(ctx context.Context, opts v1.DeleteOptions, listOpts v1.ListOptions) error {
 	return w.dyn.Namespace(w.namespace).DeleteCollection(ctx, opts, listOpts)
 }
 
-func (w *wrapNetworkingV1beta1VirtualServiceImpl) Get(ctx context.Context, name string, opts v1.GetOptions) (*v1beta1.VirtualService, error) {
+func (w *wrapNetworkingV1alpha3VirtualServiceImpl) Get(ctx context.Context, name string, opts v1.GetOptions) (*v1alpha3.VirtualService, error) {
 	uo, err := w.dyn.Namespace(w.namespace).Get(ctx, name, opts)
 	if err != nil {
 		return nil, err
 	}
-	out := &v1beta1.VirtualService{}
+	out := &v1alpha3.VirtualService{}
 	if err := convert(uo, out); err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (w *wrapNetworkingV1beta1VirtualServiceImpl) List(ctx context.Context, opts v1.ListOptions) (*v1beta1.VirtualServiceList, error) {
+func (w *wrapNetworkingV1alpha3VirtualServiceImpl) List(ctx context.Context, opts v1.ListOptions) (*v1alpha3.VirtualServiceList, error) {
 	uo, err := w.dyn.Namespace(w.namespace).List(ctx, opts)
 	if err != nil {
 		return nil, err
 	}
-	out := &v1beta1.VirtualServiceList{}
+	out := &v1alpha3.VirtualServiceList{}
 	if err := convert(uo, out); err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (w *wrapNetworkingV1beta1VirtualServiceImpl) Patch(ctx context.Context, name string, pt types.PatchType, data []byte, opts v1.PatchOptions, subresources ...string) (result *v1beta1.VirtualService, err error) {
+func (w *wrapNetworkingV1alpha3VirtualServiceImpl) Patch(ctx context.Context, name string, pt types.PatchType, data []byte, opts v1.PatchOptions, subresources ...string) (result *v1alpha3.VirtualService, err error) {
 	uo, err := w.dyn.Namespace(w.namespace).Patch(ctx, name, pt, data, opts)
 	if err != nil {
 		return nil, err
 	}
-	out := &v1beta1.VirtualService{}
+	out := &v1alpha3.VirtualService{}
 	if err := convert(uo, out); err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (w *wrapNetworkingV1beta1VirtualServiceImpl) Update(ctx context.Context, in *v1beta1.VirtualService, opts v1.UpdateOptions) (*v1beta1.VirtualService, error) {
+func (w *wrapNetworkingV1alpha3VirtualServiceImpl) Update(ctx context.Context, in *v1alpha3.VirtualService, opts v1.UpdateOptions) (*v1alpha3.VirtualService, error) {
 	in.SetGroupVersionKind(schema.GroupVersionKind{
 		Group:   "networking.istio.io",
-		Version: "v1beta1",
+		Version: "v1alpha3",
 		Kind:    "VirtualService",
 	})
 	uo := &unstructured.Unstructured{}
@@ -865,17 +865,17 @@ func (w *wrapNetworkingV1beta1VirtualServiceImpl) Update(ctx context.Context, in
 	if err != nil {
 		return nil, err
 	}
-	out := &v1beta1.VirtualService{}
+	out := &v1alpha3.VirtualService{}
 	if err := convert(uo, out); err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (w *wrapNetworkingV1beta1VirtualServiceImpl) UpdateStatus(ctx context.Context, in *v1beta1.VirtualService, opts v1.UpdateOptions) (*v1beta1.VirtualService, error) {
+func (w *wrapNetworkingV1alpha3VirtualServiceImpl) UpdateStatus(ctx context.Context, in *v1alpha3.VirtualService, opts v1.UpdateOptions) (*v1alpha3.VirtualService, error) {
 	in.SetGroupVersionKind(schema.GroupVersionKind{
 		Group:   "networking.istio.io",
-		Version: "v1beta1",
+		Version: "v1alpha3",
 		Kind:    "VirtualService",
 	})
 	uo := &unstructured.Unstructured{}
@@ -886,22 +886,22 @@ func (w *wrapNetworkingV1beta1VirtualServiceImpl) UpdateStatus(ctx context.Conte
 	if err != nil {
 		return nil, err
 	}
-	out := &v1beta1.VirtualService{}
+	out := &v1alpha3.VirtualService{}
 	if err := convert(uo, out); err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (w *wrapNetworkingV1beta1VirtualServiceImpl) Watch(ctx context.Context, opts v1.ListOptions) (watch.Interface, error) {
+func (w *wrapNetworkingV1alpha3VirtualServiceImpl) Watch(ctx context.Context, opts v1.ListOptions) (watch.Interface, error) {
 	return nil, errors.New("NYI: Watch")
 }
 
-func (w *wrapNetworkingV1beta1) WorkloadEntries(namespace string) typednetworkingv1beta1.WorkloadEntryInterface {
-	return &wrapNetworkingV1beta1WorkloadEntryImpl{
+func (w *wrapNetworkingV1alpha3) WorkloadEntries(namespace string) typednetworkingv1alpha3.WorkloadEntryInterface {
+	return &wrapNetworkingV1alpha3WorkloadEntryImpl{
 		dyn: w.dyn.Resource(schema.GroupVersionResource{
 			Group:    "networking.istio.io",
-			Version:  "v1beta1",
+			Version:  "v1alpha3",
 			Resource: "workloadentries",
 		}),
 
@@ -909,18 +909,18 @@ func (w *wrapNetworkingV1beta1) WorkloadEntries(namespace string) typednetworkin
 	}
 }
 
-type wrapNetworkingV1beta1WorkloadEntryImpl struct {
+type wrapNetworkingV1alpha3WorkloadEntryImpl struct {
 	dyn dynamic.NamespaceableResourceInterface
 
 	namespace string
 }
 
-var _ typednetworkingv1beta1.WorkloadEntryInterface = (*wrapNetworkingV1beta1WorkloadEntryImpl)(nil)
+var _ typednetworkingv1alpha3.WorkloadEntryInterface = (*wrapNetworkingV1alpha3WorkloadEntryImpl)(nil)
 
-func (w *wrapNetworkingV1beta1WorkloadEntryImpl) Create(ctx context.Context, in *v1beta1.WorkloadEntry, opts v1.CreateOptions) (*v1beta1.WorkloadEntry, error) {
+func (w *wrapNetworkingV1alpha3WorkloadEntryImpl) Create(ctx context.Context, in *v1alpha3.WorkloadEntry, opts v1.CreateOptions) (*v1alpha3.WorkloadEntry, error) {
 	in.SetGroupVersionKind(schema.GroupVersionKind{
 		Group:   "networking.istio.io",
-		Version: "v1beta1",
+		Version: "v1alpha3",
 		Kind:    "WorkloadEntry",
 	})
 	uo := &unstructured.Unstructured{}
@@ -931,61 +931,61 @@ func (w *wrapNetworkingV1beta1WorkloadEntryImpl) Create(ctx context.Context, in 
 	if err != nil {
 		return nil, err
 	}
-	out := &v1beta1.WorkloadEntry{}
+	out := &v1alpha3.WorkloadEntry{}
 	if err := convert(uo, out); err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (w *wrapNetworkingV1beta1WorkloadEntryImpl) Delete(ctx context.Context, name string, opts v1.DeleteOptions) error {
+func (w *wrapNetworkingV1alpha3WorkloadEntryImpl) Delete(ctx context.Context, name string, opts v1.DeleteOptions) error {
 	return w.dyn.Namespace(w.namespace).Delete(ctx, name, opts)
 }
 
-func (w *wrapNetworkingV1beta1WorkloadEntryImpl) DeleteCollection(ctx context.Context, opts v1.DeleteOptions, listOpts v1.ListOptions) error {
+func (w *wrapNetworkingV1alpha3WorkloadEntryImpl) DeleteCollection(ctx context.Context, opts v1.DeleteOptions, listOpts v1.ListOptions) error {
 	return w.dyn.Namespace(w.namespace).DeleteCollection(ctx, opts, listOpts)
 }
 
-func (w *wrapNetworkingV1beta1WorkloadEntryImpl) Get(ctx context.Context, name string, opts v1.GetOptions) (*v1beta1.WorkloadEntry, error) {
+func (w *wrapNetworkingV1alpha3WorkloadEntryImpl) Get(ctx context.Context, name string, opts v1.GetOptions) (*v1alpha3.WorkloadEntry, error) {
 	uo, err := w.dyn.Namespace(w.namespace).Get(ctx, name, opts)
 	if err != nil {
 		return nil, err
 	}
-	out := &v1beta1.WorkloadEntry{}
+	out := &v1alpha3.WorkloadEntry{}
 	if err := convert(uo, out); err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (w *wrapNetworkingV1beta1WorkloadEntryImpl) List(ctx context.Context, opts v1.ListOptions) (*v1beta1.WorkloadEntryList, error) {
+func (w *wrapNetworkingV1alpha3WorkloadEntryImpl) List(ctx context.Context, opts v1.ListOptions) (*v1alpha3.WorkloadEntryList, error) {
 	uo, err := w.dyn.Namespace(w.namespace).List(ctx, opts)
 	if err != nil {
 		return nil, err
 	}
-	out := &v1beta1.WorkloadEntryList{}
+	out := &v1alpha3.WorkloadEntryList{}
 	if err := convert(uo, out); err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (w *wrapNetworkingV1beta1WorkloadEntryImpl) Patch(ctx context.Context, name string, pt types.PatchType, data []byte, opts v1.PatchOptions, subresources ...string) (result *v1beta1.WorkloadEntry, err error) {
+func (w *wrapNetworkingV1alpha3WorkloadEntryImpl) Patch(ctx context.Context, name string, pt types.PatchType, data []byte, opts v1.PatchOptions, subresources ...string) (result *v1alpha3.WorkloadEntry, err error) {
 	uo, err := w.dyn.Namespace(w.namespace).Patch(ctx, name, pt, data, opts)
 	if err != nil {
 		return nil, err
 	}
-	out := &v1beta1.WorkloadEntry{}
+	out := &v1alpha3.WorkloadEntry{}
 	if err := convert(uo, out); err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (w *wrapNetworkingV1beta1WorkloadEntryImpl) Update(ctx context.Context, in *v1beta1.WorkloadEntry, opts v1.UpdateOptions) (*v1beta1.WorkloadEntry, error) {
+func (w *wrapNetworkingV1alpha3WorkloadEntryImpl) Update(ctx context.Context, in *v1alpha3.WorkloadEntry, opts v1.UpdateOptions) (*v1alpha3.WorkloadEntry, error) {
 	in.SetGroupVersionKind(schema.GroupVersionKind{
 		Group:   "networking.istio.io",
-		Version: "v1beta1",
+		Version: "v1alpha3",
 		Kind:    "WorkloadEntry",
 	})
 	uo := &unstructured.Unstructured{}
@@ -996,17 +996,17 @@ func (w *wrapNetworkingV1beta1WorkloadEntryImpl) Update(ctx context.Context, in 
 	if err != nil {
 		return nil, err
 	}
-	out := &v1beta1.WorkloadEntry{}
+	out := &v1alpha3.WorkloadEntry{}
 	if err := convert(uo, out); err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (w *wrapNetworkingV1beta1WorkloadEntryImpl) UpdateStatus(ctx context.Context, in *v1beta1.WorkloadEntry, opts v1.UpdateOptions) (*v1beta1.WorkloadEntry, error) {
+func (w *wrapNetworkingV1alpha3WorkloadEntryImpl) UpdateStatus(ctx context.Context, in *v1alpha3.WorkloadEntry, opts v1.UpdateOptions) (*v1alpha3.WorkloadEntry, error) {
 	in.SetGroupVersionKind(schema.GroupVersionKind{
 		Group:   "networking.istio.io",
-		Version: "v1beta1",
+		Version: "v1alpha3",
 		Kind:    "WorkloadEntry",
 	})
 	uo := &unstructured.Unstructured{}
@@ -1017,22 +1017,22 @@ func (w *wrapNetworkingV1beta1WorkloadEntryImpl) UpdateStatus(ctx context.Contex
 	if err != nil {
 		return nil, err
 	}
-	out := &v1beta1.WorkloadEntry{}
+	out := &v1alpha3.WorkloadEntry{}
 	if err := convert(uo, out); err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (w *wrapNetworkingV1beta1WorkloadEntryImpl) Watch(ctx context.Context, opts v1.ListOptions) (watch.Interface, error) {
+func (w *wrapNetworkingV1alpha3WorkloadEntryImpl) Watch(ctx context.Context, opts v1.ListOptions) (watch.Interface, error) {
 	return nil, errors.New("NYI: Watch")
 }
 
-func (w *wrapNetworkingV1beta1) WorkloadGroups(namespace string) typednetworkingv1beta1.WorkloadGroupInterface {
-	return &wrapNetworkingV1beta1WorkloadGroupImpl{
+func (w *wrapNetworkingV1alpha3) WorkloadGroups(namespace string) typednetworkingv1alpha3.WorkloadGroupInterface {
+	return &wrapNetworkingV1alpha3WorkloadGroupImpl{
 		dyn: w.dyn.Resource(schema.GroupVersionResource{
 			Group:    "networking.istio.io",
-			Version:  "v1beta1",
+			Version:  "v1alpha3",
 			Resource: "workloadgroups",
 		}),
 
@@ -1040,18 +1040,18 @@ func (w *wrapNetworkingV1beta1) WorkloadGroups(namespace string) typednetworking
 	}
 }
 
-type wrapNetworkingV1beta1WorkloadGroupImpl struct {
+type wrapNetworkingV1alpha3WorkloadGroupImpl struct {
 	dyn dynamic.NamespaceableResourceInterface
 
 	namespace string
 }
 
-var _ typednetworkingv1beta1.WorkloadGroupInterface = (*wrapNetworkingV1beta1WorkloadGroupImpl)(nil)
+var _ typednetworkingv1alpha3.WorkloadGroupInterface = (*wrapNetworkingV1alpha3WorkloadGroupImpl)(nil)
 
-func (w *wrapNetworkingV1beta1WorkloadGroupImpl) Create(ctx context.Context, in *v1beta1.WorkloadGroup, opts v1.CreateOptions) (*v1beta1.WorkloadGroup, error) {
+func (w *wrapNetworkingV1alpha3WorkloadGroupImpl) Create(ctx context.Context, in *v1alpha3.WorkloadGroup, opts v1.CreateOptions) (*v1alpha3.WorkloadGroup, error) {
 	in.SetGroupVersionKind(schema.GroupVersionKind{
 		Group:   "networking.istio.io",
-		Version: "v1beta1",
+		Version: "v1alpha3",
 		Kind:    "WorkloadGroup",
 	})
 	uo := &unstructured.Unstructured{}
@@ -1062,61 +1062,61 @@ func (w *wrapNetworkingV1beta1WorkloadGroupImpl) Create(ctx context.Context, in 
 	if err != nil {
 		return nil, err
 	}
-	out := &v1beta1.WorkloadGroup{}
+	out := &v1alpha3.WorkloadGroup{}
 	if err := convert(uo, out); err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (w *wrapNetworkingV1beta1WorkloadGroupImpl) Delete(ctx context.Context, name string, opts v1.DeleteOptions) error {
+func (w *wrapNetworkingV1alpha3WorkloadGroupImpl) Delete(ctx context.Context, name string, opts v1.DeleteOptions) error {
 	return w.dyn.Namespace(w.namespace).Delete(ctx, name, opts)
 }
 
-func (w *wrapNetworkingV1beta1WorkloadGroupImpl) DeleteCollection(ctx context.Context, opts v1.DeleteOptions, listOpts v1.ListOptions) error {
+func (w *wrapNetworkingV1alpha3WorkloadGroupImpl) DeleteCollection(ctx context.Context, opts v1.DeleteOptions, listOpts v1.ListOptions) error {
 	return w.dyn.Namespace(w.namespace).DeleteCollection(ctx, opts, listOpts)
 }
 
-func (w *wrapNetworkingV1beta1WorkloadGroupImpl) Get(ctx context.Context, name string, opts v1.GetOptions) (*v1beta1.WorkloadGroup, error) {
+func (w *wrapNetworkingV1alpha3WorkloadGroupImpl) Get(ctx context.Context, name string, opts v1.GetOptions) (*v1alpha3.WorkloadGroup, error) {
 	uo, err := w.dyn.Namespace(w.namespace).Get(ctx, name, opts)
 	if err != nil {
 		return nil, err
 	}
-	out := &v1beta1.WorkloadGroup{}
+	out := &v1alpha3.WorkloadGroup{}
 	if err := convert(uo, out); err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (w *wrapNetworkingV1beta1WorkloadGroupImpl) List(ctx context.Context, opts v1.ListOptions) (*v1beta1.WorkloadGroupList, error) {
+func (w *wrapNetworkingV1alpha3WorkloadGroupImpl) List(ctx context.Context, opts v1.ListOptions) (*v1alpha3.WorkloadGroupList, error) {
 	uo, err := w.dyn.Namespace(w.namespace).List(ctx, opts)
 	if err != nil {
 		return nil, err
 	}
-	out := &v1beta1.WorkloadGroupList{}
+	out := &v1alpha3.WorkloadGroupList{}
 	if err := convert(uo, out); err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (w *wrapNetworkingV1beta1WorkloadGroupImpl) Patch(ctx context.Context, name string, pt types.PatchType, data []byte, opts v1.PatchOptions, subresources ...string) (result *v1beta1.WorkloadGroup, err error) {
+func (w *wrapNetworkingV1alpha3WorkloadGroupImpl) Patch(ctx context.Context, name string, pt types.PatchType, data []byte, opts v1.PatchOptions, subresources ...string) (result *v1alpha3.WorkloadGroup, err error) {
 	uo, err := w.dyn.Namespace(w.namespace).Patch(ctx, name, pt, data, opts)
 	if err != nil {
 		return nil, err
 	}
-	out := &v1beta1.WorkloadGroup{}
+	out := &v1alpha3.WorkloadGroup{}
 	if err := convert(uo, out); err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (w *wrapNetworkingV1beta1WorkloadGroupImpl) Update(ctx context.Context, in *v1beta1.WorkloadGroup, opts v1.UpdateOptions) (*v1beta1.WorkloadGroup, error) {
+func (w *wrapNetworkingV1alpha3WorkloadGroupImpl) Update(ctx context.Context, in *v1alpha3.WorkloadGroup, opts v1.UpdateOptions) (*v1alpha3.WorkloadGroup, error) {
 	in.SetGroupVersionKind(schema.GroupVersionKind{
 		Group:   "networking.istio.io",
-		Version: "v1beta1",
+		Version: "v1alpha3",
 		Kind:    "WorkloadGroup",
 	})
 	uo := &unstructured.Unstructured{}
@@ -1127,17 +1127,17 @@ func (w *wrapNetworkingV1beta1WorkloadGroupImpl) Update(ctx context.Context, in 
 	if err != nil {
 		return nil, err
 	}
-	out := &v1beta1.WorkloadGroup{}
+	out := &v1alpha3.WorkloadGroup{}
 	if err := convert(uo, out); err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (w *wrapNetworkingV1beta1WorkloadGroupImpl) UpdateStatus(ctx context.Context, in *v1beta1.WorkloadGroup, opts v1.UpdateOptions) (*v1beta1.WorkloadGroup, error) {
+func (w *wrapNetworkingV1alpha3WorkloadGroupImpl) UpdateStatus(ctx context.Context, in *v1alpha3.WorkloadGroup, opts v1.UpdateOptions) (*v1alpha3.WorkloadGroup, error) {
 	in.SetGroupVersionKind(schema.GroupVersionKind{
 		Group:   "networking.istio.io",
-		Version: "v1beta1",
+		Version: "v1alpha3",
 		Kind:    "WorkloadGroup",
 	})
 	uo := &unstructured.Unstructured{}
@@ -1148,13 +1148,13 @@ func (w *wrapNetworkingV1beta1WorkloadGroupImpl) UpdateStatus(ctx context.Contex
 	if err != nil {
 		return nil, err
 	}
-	out := &v1beta1.WorkloadGroup{}
+	out := &v1alpha3.WorkloadGroup{}
 	if err := convert(uo, out); err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (w *wrapNetworkingV1beta1WorkloadGroupImpl) Watch(ctx context.Context, opts v1.ListOptions) (watch.Interface, error) {
+func (w *wrapNetworkingV1alpha3WorkloadGroupImpl) Watch(ctx context.Context, opts v1.ListOptions) (watch.Interface, error) {
 	return nil, errors.New("NYI: Watch")
 }

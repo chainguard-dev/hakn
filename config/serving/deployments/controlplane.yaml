@@ -138,11 +138,11 @@ spec:
 
         resources:
           requests:
-            cpu: 300m
-            memory: 1000Mi
+            cpu: 30m
+            memory: 40Mi
           limits:
             cpu: 300m
-            memory: 1000Mi
+            memory: 400Mi
 
         env:
         - name: STATEFUL_CONTROLLER_ORDINAL
