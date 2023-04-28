@@ -2,20 +2,28 @@ module github.com/chainguard-dev/hakn
 
 go 1.20
 
+replace (
+	k8s.io/api => k8s.io/api v0.25.8
+	k8s.io/apiextensions-apiserver => k8s.io/apiextensions-apiserver v0.25.8
+	k8s.io/apimachinery => k8s.io/apimachinery v0.25.8
+	k8s.io/client-go => k8s.io/client-go v0.25.8
+	k8s.io/code-generator => k8s.io/code-generator v0.25.8
+)
+
 require (
 	github.com/google/go-cmp v0.5.9
 	github.com/hashicorp/golang-lru v0.6.0
 	go.uber.org/zap v1.24.0
-	istio.io/api v0.0.0-20221212180111-09895d694711
-	k8s.io/api v0.25.8
-	k8s.io/apimachinery v0.25.8
-	k8s.io/client-go v0.25.8
-	knative.dev/caching v0.0.0-20230225001731-71041a310e84
-	knative.dev/hack v0.0.0-20230217102752-199139daec7e
+	istio.io/api v0.0.0-20230204131218-41d7951eb9e4
+	k8s.io/api v0.26.0
+	k8s.io/apimachinery v0.26.0
+	k8s.io/client-go v0.26.0
+	knative.dev/caching v0.0.0-20230418150356-05a86ad5d7db
+	knative.dev/hack v0.0.0-20230417170854-f591fea109b3
 	knative.dev/net-istio v0.36.2
-	knative.dev/networking v0.0.0-20230225001731-5e096d63b0cb
-	knative.dev/pkg v0.0.0-20230224205330-75da922ef055
-	knative.dev/serving v0.36.3
+	knative.dev/networking v0.0.0-20230419144338-e5d04e805e50
+	knative.dev/pkg v0.0.0-20230418073056-dfad48eaa5d0
+	knative.dev/serving v0.37.0
 )
 
 require (
@@ -77,8 +85,8 @@ require (
 	github.com/golang/protobuf v1.5.3 // indirect
 	github.com/google/gnostic v0.6.9 // indirect
 	github.com/google/go-containerregistry v0.14.0 // indirect
-	github.com/google/go-containerregistry/pkg/authn/k8schain v0.0.0-20220414154538-570ba6c88a50 // indirect
-	github.com/google/go-containerregistry/pkg/authn/kubernetes v0.0.0-20220414143355-892d7a808387 // indirect
+	github.com/google/go-containerregistry/pkg/authn/k8schain v0.0.0-20230209165335-3624968304fd // indirect
+	github.com/google/go-containerregistry/pkg/authn/kubernetes v0.0.0-20230209165335-3624968304fd // indirect
 	github.com/google/gofuzz v1.2.0 // indirect
 	github.com/google/uuid v1.3.0 // indirect
 	github.com/gorilla/websocket v1.4.2 // indirect
@@ -129,14 +137,14 @@ require (
 	gopkg.in/inf.v0 v0.9.1 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
-	istio.io/client-go v1.16.1 // indirect
+	istio.io/client-go v1.17.0 // indirect
 	k8s.io/apiextensions-apiserver v0.25.4 // indirect
-	k8s.io/code-generator v0.25.4 // indirect
+	k8s.io/code-generator v0.25.8 // indirect
 	k8s.io/gengo v0.0.0-20221011193443-fad74ee6edd9 // indirect
 	k8s.io/klog/v2 v2.90.1 // indirect
 	k8s.io/kube-openapi v0.0.0-20230308215209-15aac26d736a // indirect
 	k8s.io/utils v0.0.0-20230308161112-d77c459e9343 // indirect
-	knative.dev/control-protocol v0.0.0-20230225001830-38d0f0c36190 // indirect
+	knative.dev/control-protocol v0.0.0-20230420145039-d9cda76c5b03 // indirect
 	sigs.k8s.io/json v0.0.0-20221116044647-bc3834ca7abd // indirect
 	sigs.k8s.io/structured-merge-diff/v4 v4.2.3 // indirect
 	sigs.k8s.io/yaml v1.3.0 // indirect
