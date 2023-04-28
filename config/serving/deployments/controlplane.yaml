@@ -195,16 +195,18 @@ spec:
           containerPort: 8011
         - name: websocket
           containerPort: 8081
+        - name: probes
+          containerPort: 8080
 
         readinessProbe:
           httpGet:
-            port: 8080
+            port: 8081
             httpHeaders:
             - name: k-kubelet-probe
               value: "autoscaler"
         livenessProbe:
           httpGet:
-            port: 8080
+            port: 8081
             httpHeaders:
             - name: k-kubelet-probe
               value: "autoscaler"
