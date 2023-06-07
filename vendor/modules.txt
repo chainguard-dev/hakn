@@ -650,12 +650,11 @@ gopkg.in/yaml.v3
 ## explicit; go 1.18
 istio.io/api/analysis/v1alpha1
 istio.io/api/meta/v1alpha1
-istio.io/api/networking/v1alpha3
 istio.io/api/networking/v1beta1
 istio.io/api/type/v1beta1
 # istio.io/client-go v1.17.0
 ## explicit; go 1.18
-istio.io/client-go/pkg/apis/networking/v1alpha3
+istio.io/client-go/pkg/apis/networking/v1beta1
 # k8s.io/api v0.26.0 => k8s.io/api v0.25.8
 ## explicit; go 1.19
 k8s.io/api/admission/v1
@@ -1155,22 +1154,22 @@ knative.dev/control-protocol/pkg/certificates
 # knative.dev/hack v0.0.0-20230417170854-f591fea109b3
 ## explicit; go 1.18
 knative.dev/hack
-# knative.dev/net-istio v0.36.2
+# knative.dev/net-istio v0.37.1
 ## explicit; go 1.18
 knative.dev/net-istio/config
 knative.dev/net-istio/pkg/client/istio/clientset/versioned
 knative.dev/net-istio/pkg/client/istio/clientset/versioned/scheme
-knative.dev/net-istio/pkg/client/istio/clientset/versioned/typed/networking/v1alpha3
+knative.dev/net-istio/pkg/client/istio/clientset/versioned/typed/networking/v1beta1
 knative.dev/net-istio/pkg/client/istio/informers/externalversions
 knative.dev/net-istio/pkg/client/istio/informers/externalversions/internalinterfaces
 knative.dev/net-istio/pkg/client/istio/informers/externalversions/networking
-knative.dev/net-istio/pkg/client/istio/informers/externalversions/networking/v1alpha3
+knative.dev/net-istio/pkg/client/istio/informers/externalversions/networking/v1beta1
 knative.dev/net-istio/pkg/client/istio/injection/client
 knative.dev/net-istio/pkg/client/istio/injection/informers/factory
-knative.dev/net-istio/pkg/client/istio/injection/informers/networking/v1alpha3/destinationrule
-knative.dev/net-istio/pkg/client/istio/injection/informers/networking/v1alpha3/gateway
-knative.dev/net-istio/pkg/client/istio/injection/informers/networking/v1alpha3/virtualservice
-knative.dev/net-istio/pkg/client/istio/listers/networking/v1alpha3
+knative.dev/net-istio/pkg/client/istio/injection/informers/networking/v1beta1/destinationrule
+knative.dev/net-istio/pkg/client/istio/injection/informers/networking/v1beta1/gateway
+knative.dev/net-istio/pkg/client/istio/injection/informers/networking/v1beta1/virtualservice
+knative.dev/net-istio/pkg/client/istio/listers/networking/v1beta1
 knative.dev/net-istio/pkg/reconciler/accessor
 knative.dev/net-istio/pkg/reconciler/accessor/core
 knative.dev/net-istio/pkg/reconciler/accessor/istio
