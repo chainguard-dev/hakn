@@ -20,10 +20,10 @@ require (
 	k8s.io/client-go v0.26.0
 	knative.dev/caching v0.0.0-20230418150356-05a86ad5d7db
 	knative.dev/hack v0.0.0-20230417170854-f591fea109b3
-	knative.dev/net-istio v0.36.2
+	knative.dev/net-istio v0.37.1
 	knative.dev/networking v0.0.0-20230419144338-e5d04e805e50
 	knative.dev/pkg v0.0.0-20230418073056-dfad48eaa5d0
-	knative.dev/serving v0.37.1
+	knative.dev/serving v0.37.2
 )
 
 require (

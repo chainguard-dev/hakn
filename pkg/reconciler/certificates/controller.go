@@ -26,7 +26,7 @@ import (
 // will ensure it has the appropriate shape for the webhook.
 func NewController(
 	ctx context.Context,
-	cmw configmap.Watcher,
+	_ configmap.Watcher,
 ) *controller.Impl {
 	client := kubeclient.Get(ctx)
 
