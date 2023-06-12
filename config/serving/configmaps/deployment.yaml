@@ -14,6 +14,22 @@ data:
   # and substituted here.
   queueSidecarImage: ko://knative.dev/serving/cmd/queue
 
+  # Sets the queue proxy's CPU request.
+  # If omitted, a default value (default "25m"), is used.
+  queue-sidecar-cpu-request: "25m"
+
+  # Sets the queue proxy's CPU limit.
+  # If omitted, no value is specified and the system default is used.
+  queue-sidecar-cpu-limit: "1000m"
+
+  # Sets the queue proxy's memory request.
+  # If omitted, no value is specified and the system default is used.
+  queue-sidecar-memory-request: "50Mi"
+
+  # Sets the queue proxy's memory limit.
+  # If omitted, no value is specified and the system default is used.
+  queue-sidecar-memory-limit: "800Mi"
+
   _example: |
     ################################
     #                              #
