@@ -66,7 +66,7 @@ func newValidationAdmissionController(ctx context.Context, cmw configmap.Watcher
 	)
 }
 
-func newConfigValidationController(ctx context.Context, cmw configmap.Watcher) *controller.Impl {
+func newConfigValidationController(ctx context.Context, _ configmap.Watcher) *controller.Impl {
 	return configmaps.NewAdmissionController(ctx,
 
 		// Name of the configmap webhook.
