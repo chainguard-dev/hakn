@@ -253,8 +253,8 @@ message VirtualService {
   repeated string gateways = 2;
 
   // An ordered list of route rules for HTTP traffic. HTTP routes will be
-  // applied to platform service ports named 'http-*'/'http2-*'/'grpc-*', gateway
-  // ports with protocol HTTP/HTTP2/GRPC/ TLS-terminated-HTTPS and service
+  // applied to platform service ports using HTTP/HTTP2/GRPC protocols, gateway
+  // ports with protocol HTTP/HTTP2/GRPC/TLS-terminated-HTTPS and service
   // entry ports using HTTP/HTTP2/GRPC protocols.  The first rule matching
   // an incoming request is used.
   repeated HTTPRoute http = 3;
@@ -1071,6 +1071,13 @@ message HTTPMatchRequest {
   // - `regex: "value"` for RE2 style regex-based match (https://github.com/google/re2/wiki/Syntax).
   //
   // If the value is empty and only the name of header is specified, presence of the header is checked.
+  // To provide an empty value, use `{}`, for example:
+  //
+  // ```
+  //  - match:
+  //    - headers:
+  //        myheader: {}
+  // ```
   // **Note:** The keys `uri`, `scheme`, `method`, and `authority` will be ignored.
   map<string, StringMatch> headers = 5;
 
@@ -1100,11 +1107,12 @@ message HTTPMatchRequest {
   // - For a query parameter like "?key", the map key would be "key" and the
   //   string match could be defined as `exact: ""`.
   //
+  // - For a query parameter like "?key=abc" or "?key=abx", the map key would be "key" and the
+  //   string match could be defined as `prefix: "ab"`.
+  //
   // - For a query parameter like "?key=123", the map key would be "key" and the
   //   string match could be defined as `regex: "\d+$"`. Note that this
   //   configuration will only match values like "123" but not "a123" or "123a".
-  //
-  // **Note:** `prefix` matching is currently not supported.
   map<string, StringMatch> query_params = 9;
 
   // Flag to specify whether the URI matching should be case-insensitive.
@@ -1683,6 +1691,27 @@ message HTTPRewrite {
 
   // rewrite the Authority/Host header with this value.
   string authority = 2;
+
+  // rewrite the path portion of the URI with the specified regex.
+  RegexRewrite uri_regex_rewrite = 3;
+}
+
+message RegexRewrite {
+  // RE2 style regex-based match (https://github.com/google/re2/wiki/Syntax).
+  string match = 1;
+
+  // The string that should replace into matching portions of original URI. 
+  // Capture groups in the pattern can be referenced in the new URI.
+  // Examples:
+  //
+  // Example 1: rewrite with capture groups
+  // Path pattern "/service/update/v1/api" with match "^/service/([^/]+)(/.*)$" and
+  // rewrite string of "/customprefix/\2/\1" would transform into "/customprefix/v1/api/update".
+  // 
+  // Example 2: case insensitive rewrite
+  // Path pattern "/aaa/XxX/bbb" with match "(?i)/xxx/" and a rewrite string of /yyy/ would do a 
+  // case-insensitive match and transform the path to "/aaa/yyy/bbb".
+  string rewrite = 2;
 }
 
 // Describes how to match a given string in HTTP headers. Match is
