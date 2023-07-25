@@ -20,10 +20,8 @@ package client
 
 import (
 	context "context"
-	json "encoding/json"
-	errors "errors"
-	fmt "fmt"
 
+<<<<<<< HEAD
 	v1beta1 "istio.io/client-go/pkg/apis/networking/v1beta1"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	unstructured "k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
@@ -36,8 +34,11 @@ import (
 	rest "k8s.io/client-go/rest"
 	versioned "knative.dev/net-istio/pkg/client/istio/clientset/versioned"
 	typednetworkingv1beta1 "knative.dev/net-istio/pkg/client/istio/clientset/versioned/typed/networking/v1beta1"
+=======
+	rest "k8s.io/client-go/rest"
+	versioned "knative.dev/net-istio/pkg/client/istio/clientset/versioned"
+>>>>>>> a31aa62 (update deps for knative 1.11.0/v0.38.0 release)
 	injection "knative.dev/pkg/injection"
-	dynamicclient "knative.dev/pkg/injection/clients/dynamicclient"
 	logging "knative.dev/pkg/logging"
 )
 
@@ -46,7 +47,6 @@ func init() {
 	injection.Default.RegisterClientFetcher(func(ctx context.Context) interface{} {
 		return Get(ctx)
 	})
-	injection.Dynamic.RegisterDynamicClient(withClientFromDynamic)
 }
 
 // Key is used as the key for associating information with a context.Context.
@@ -54,10 +54,6 @@ type Key struct{}
 
 func withClientFromConfig(ctx context.Context, cfg *rest.Config) context.Context {
 	return context.WithValue(ctx, Key{}, versioned.NewForConfigOrDie(cfg))
-}
-
-func withClientFromDynamic(ctx context.Context) context.Context {
-	return context.WithValue(ctx, Key{}, &wrapClient{dyn: dynamicclient.Get(ctx)})
 }
 
 // Get extracts the versioned.Interface client from the context.
@@ -74,6 +70,7 @@ func Get(ctx context.Context) versioned.Interface {
 	}
 	return untyped.(versioned.Interface)
 }
+<<<<<<< HEAD
 
 type wrapClient struct {
 	dyn dynamic.Interface
@@ -1158,3 +1155,5 @@ func (w *wrapNetworkingV1beta1WorkloadGroupImpl) UpdateStatus(ctx context.Contex
 func (w *wrapNetworkingV1beta1WorkloadGroupImpl) Watch(ctx context.Context, opts v1.ListOptions) (watch.Interface, error) {
 	return nil, errors.New("NYI: Watch")
 }
+=======
+>>>>>>> a31aa62 (update deps for knative 1.11.0/v0.38.0 release)

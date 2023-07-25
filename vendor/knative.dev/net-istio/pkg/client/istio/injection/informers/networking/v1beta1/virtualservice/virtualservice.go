@@ -21,6 +21,7 @@ package virtualservice
 import (
 	context "context"
 
+<<<<<<< HEAD
 	apisnetworkingv1beta1 "istio.io/client-go/pkg/apis/networking/v1beta1"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	labels "k8s.io/apimachinery/pkg/labels"
@@ -30,6 +31,10 @@ import (
 	client "knative.dev/net-istio/pkg/client/istio/injection/client"
 	factory "knative.dev/net-istio/pkg/client/istio/injection/informers/factory"
 	networkingv1beta1 "knative.dev/net-istio/pkg/client/istio/listers/networking/v1beta1"
+=======
+	v1beta1 "knative.dev/net-istio/pkg/client/istio/informers/externalversions/networking/v1beta1"
+	factory "knative.dev/net-istio/pkg/client/istio/injection/informers/factory"
+>>>>>>> a31aa62 (update deps for knative 1.11.0/v0.38.0 release)
 	controller "knative.dev/pkg/controller"
 	injection "knative.dev/pkg/injection"
 	logging "knative.dev/pkg/logging"
@@ -37,7 +42,10 @@ import (
 
 func init() {
 	injection.Default.RegisterInformer(withInformer)
+<<<<<<< HEAD
 	injection.Dynamic.RegisterDynamicInformer(withDynamicInformer)
+=======
+>>>>>>> a31aa62 (update deps for knative 1.11.0/v0.38.0 release)
 }
 
 // Key is used for associating the Informer inside the context.Context.
@@ -49,11 +57,14 @@ func withInformer(ctx context.Context) (context.Context, controller.Informer) {
 	return context.WithValue(ctx, Key{}, inf), inf.Informer()
 }
 
+<<<<<<< HEAD
 func withDynamicInformer(ctx context.Context) context.Context {
 	inf := &wrapper{client: client.Get(ctx), resourceVersion: injection.GetResourceVersion(ctx)}
 	return context.WithValue(ctx, Key{}, inf)
 }
 
+=======
+>>>>>>> a31aa62 (update deps for knative 1.11.0/v0.38.0 release)
 // Get extracts the typed informer from the context.
 func Get(ctx context.Context) v1beta1.VirtualServiceInformer {
 	untyped := ctx.Value(Key{})
@@ -63,6 +74,7 @@ func Get(ctx context.Context) v1beta1.VirtualServiceInformer {
 	}
 	return untyped.(v1beta1.VirtualServiceInformer)
 }
+<<<<<<< HEAD
 
 type wrapper struct {
 	client versioned.Interface
@@ -114,3 +126,5 @@ func (w *wrapper) Get(name string) (*apisnetworkingv1beta1.VirtualService, error
 		ResourceVersion: w.resourceVersion,
 	})
 }
+=======
+>>>>>>> a31aa62 (update deps for knative 1.11.0/v0.38.0 release)

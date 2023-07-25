@@ -20,7 +20,6 @@ import (
 	"context"
 	"fmt"
 	"sort"
-	"strings"
 
 	"github.com/google/go-cmp/cmp"
 	"go.uber.org/zap"
@@ -214,16 +213,6 @@ func (r *Reconciler) reconcileIngress(ctx context.Context, ing *v1alpha1.Ingress
 		// about the steady state.
 		logger.Debug("Kingress is ready, skipping probe.")
 		ready = true
-	} else if hasStatus, readyStatus := r.areVirtualServicesReady(ctx, vses); hasStatus {
-		// Check if our VirtualServices have a status property.
-		// If they do and we're ready, we can use that to determine readiness.
-
-		if p, ok := r.statusManager.(*status.Prober); ok {
-			// if possible, cancel probing in case we've started it
-			p.CancelIngressProbing(ing)
-		}
-
-		ready = readyStatus
 	} else {
 		readyStatus, err := r.statusManager.IsReady(ctx, ing)
 		if err != nil {
@@ -516,6 +505,7 @@ func isIngressPublic(ing *v1alpha1.Ingress) bool {
 	}
 	return false
 }
+<<<<<<< HEAD
 
 // areVirtualServicesReady checks if *all* the provided virtual services have a status, and if so if it's ready.
 // The return values are (hasStatus, ready), where:
@@ -592,3 +582,5 @@ func (r *Reconciler) isVirtualServiceReady(ctx context.Context, vs *v1beta1.Virt
 	return false, false, nil
 
 }
+=======
+>>>>>>> a31aa62 (update deps for knative 1.11.0/v0.38.0 release)
