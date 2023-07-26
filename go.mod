@@ -8,7 +8,7 @@ require (
 	go.uber.org/zap v1.24.0
 	istio.io/api v0.0.0-20230204131218-41d7951eb9e4
 	k8s.io/api v0.26.5
-	k8s.io/apimachinery v0.26.5
+	k8s.io/apimachinery v0.27.4
 	k8s.io/client-go v0.26.5
 	knative.dev/caching v0.0.0-20230718155311-24ff72399d90
 	knative.dev/hack v0.0.0-20230712131415-ddae80293c43
@@ -137,7 +137,7 @@ require (
 	k8s.io/code-generator v0.26.5 // indirect
 	k8s.io/gengo v0.0.0-20221011193443-fad74ee6edd9 // indirect
 	k8s.io/klog/v2 v2.90.1 // indirect
-	k8s.io/kube-openapi v0.0.0-20230308215209-15aac26d736a // indirect
+	k8s.io/kube-openapi v0.0.0-20230501164219-8b0f38b5fd1f // indirect
 	k8s.io/utils v0.0.0-20230308161112-d77c459e9343 // indirect
 	sigs.k8s.io/json v0.0.0-20221116044647-bc3834ca7abd // indirect
 	sigs.k8s.io/structured-merge-diff/v4 v4.2.3 // indirect
