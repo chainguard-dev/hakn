@@ -643,11 +643,7 @@ istio.io/api/type/v1beta1
 # istio.io/client-go v1.17.0
 ## explicit; go 1.18
 istio.io/client-go/pkg/apis/networking/v1beta1
-<<<<<<< HEAD
-# k8s.io/api v0.26.0 => k8s.io/api v0.25.8
-=======
 # k8s.io/api v0.26.5
->>>>>>> a31aa62 (update deps for knative 1.11.0/v0.38.0 release)
 ## explicit; go 1.19
 k8s.io/api/admission/v1
 k8s.io/api/admissionregistration/v1
@@ -1166,11 +1162,7 @@ knative.dev/caching/pkg/client/listers/caching/v1alpha1
 # knative.dev/hack v0.0.0-20230712131415-ddae80293c43
 ## explicit; go 1.18
 knative.dev/hack
-<<<<<<< HEAD
-# knative.dev/net-istio v0.37.1
-=======
 # knative.dev/net-istio v0.38.0
->>>>>>> a31aa62 (update deps for knative 1.11.0/v0.38.0 release)
 ## explicit; go 1.18
 knative.dev/net-istio/config
 knative.dev/net-istio/pkg/client/istio/clientset/versioned
@@ -1309,11 +1301,7 @@ knative.dev/pkg/webhook/resourcesemantics/defaulting
 knative.dev/pkg/webhook/resourcesemantics/validation
 knative.dev/pkg/webhook/testing
 knative.dev/pkg/websocket
-<<<<<<< HEAD
-# knative.dev/serving v0.37.2
-=======
 # knative.dev/serving v0.38.0
->>>>>>> a31aa62 (update deps for knative 1.11.0/v0.38.0 release)
 ## explicit; go 1.18
 knative.dev/serving/cmd/activator
 knative.dev/serving/cmd/autoscaler
