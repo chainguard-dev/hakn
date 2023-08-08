@@ -5,7 +5,7 @@ go 1.20
 require (
 	github.com/google/go-cmp v0.5.9
 	github.com/hashicorp/golang-lru v0.6.0
-	go.uber.org/zap v1.24.0
+	go.uber.org/zap v1.25.0
 	istio.io/api v0.0.0-20230204131218-41d7951eb9e4
 	k8s.io/api v0.26.5
 	k8s.io/apimachinery v0.26.5
@@ -49,7 +49,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/sts v1.18.7 // indirect
 	github.com/aws/smithy-go v1.13.5 // indirect
 	github.com/awslabs/amazon-ecr-credential-helper/ecr-login v0.0.0-20230322223720-077b4a917a90 // indirect
-	github.com/benbjohnson/clock v1.1.0 // indirect
+	github.com/benbjohnson/clock v1.3.0 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/blang/semver/v4 v4.0.0 // indirect
 	github.com/blendle/zapdriver v1.3.1 // indirect
@@ -110,7 +110,7 @@ require (
 	go.opencensus.io v0.24.0 // indirect
 	go.uber.org/atomic v1.9.0 // indirect
 	go.uber.org/automaxprocs v1.4.0 // indirect
-	go.uber.org/multierr v1.6.0 // indirect
+	go.uber.org/multierr v1.10.0 // indirect
 	golang.org/x/crypto v0.11.0 // indirect
 	golang.org/x/mod v0.9.0 // indirect
 	golang.org/x/net v0.12.0 // indirect
