@@ -14,6 +14,8 @@ data:
   kubernetes.podspec-volumes-emptydir: enabled
   kubernetes.podspec-init-containers: enabled
   kubernetes.podspec-securitycontext: enabled
+  kubernetes.podspec-affinity: enabled
+  kubernetes.podspec-topologyspreadconstraints: enabled
 
   _example: |
     ################################
