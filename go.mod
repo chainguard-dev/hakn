@@ -13,9 +13,9 @@ require (
 	knative.dev/caching v0.0.0-20230718155311-24ff72399d90
 	knative.dev/hack v0.0.0-20230712131415-ddae80293c43
 	knative.dev/net-istio v0.38.0
-	knative.dev/networking v0.0.0-20230718160410-75dcd54d9510
-	knative.dev/pkg v0.0.0-20230718152110-aef227e72ead
-	knative.dev/serving v0.38.1
+	knative.dev/networking v0.0.0-20231012062757-a5958051caf8
+	knative.dev/pkg v0.0.0-20231011193800-bd99f2f98be7
+	knative.dev/serving v0.38.2
 
 )
 
