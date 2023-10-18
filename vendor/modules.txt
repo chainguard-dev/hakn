@@ -1182,7 +1182,7 @@ knative.dev/caching/pkg/client/listers/caching/v1alpha1
 # knative.dev/hack v0.0.0-20230712131415-ddae80293c43
 ## explicit; go 1.18
 knative.dev/hack
-# knative.dev/net-istio v0.38.0
+# knative.dev/net-istio v0.38.1
 ## explicit; go 1.18
 knative.dev/net-istio/config
 knative.dev/net-istio/pkg/client/istio/clientset/versioned
