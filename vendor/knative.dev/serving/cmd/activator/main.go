@@ -158,8 +158,8 @@ func main() {
 		logger.Fatalw("Failed to construct network config", zap.Error(err))
 	}
 
-	// Enable TLS against queue-proxy when internal-encryption is enabled.
-	tlsEnabled := networkConfig.InternalEncryption
+	// Enable TLS for connections to queue-proxy when system-internal-tls is enabled.
+	tlsEnabled := networkConfig.SystemInternalTLSEnabled()
 
 	var certCache *certificate.CertCache
 
@@ -167,9 +167,9 @@ func main() {
 	// At this moment activator with TLS does not disable HTTP.
 	// See also https://github.com/knative/serving/issues/12808.
 	if tlsEnabled {
-		logger.Info("Internal Encryption is enabled")
+		logger.Info("Knative Internal TLS is enabled")
 		certCache = certificate.NewCertCache(ctx)
-		transport = pkgnet.NewProxyAutoTLSTransport(env.MaxIdleProxyConns, env.MaxIdleProxyConnsPerHost, &certCache.TLSConf)
+		transport = pkgnet.NewProxyAutoTLSTransport(env.MaxIdleProxyConns, env.MaxIdleProxyConnsPerHost, certCache.TLSContext())
 	}
 
 	// Start throttler.
@@ -278,14 +278,14 @@ func main() {
 		}(name, server)
 	}
 
-	// Enable TLS server when internal-encryption is specified.
+	// Enable TLS server when system-internal-tls is specified.
 	// At this moment activator with TLS does not disable HTTP.
 	// See also https://github.com/knative/serving/issues/12808.
 	if tlsEnabled {
 		name, server := "https", pkgnet.NewServer(":"+strconv.Itoa(networking.BackendHTTPSPort), ah)
 		go func(name string, s *http.Server) {
 			s.TLSConfig = &tls.Config{
-				MinVersion:     tls.VersionTLS12,
+				MinVersion:     tls.VersionTLS13,
 				GetCertificate: certCache.GetCertificate,
 			}
 			// Don't forward ErrServerClosed as that indicates we're already shutting down.
