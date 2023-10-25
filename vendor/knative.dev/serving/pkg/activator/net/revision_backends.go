@@ -249,10 +249,11 @@ func (rw *revisionWatcher) probePodIPs(ready, notReady sets.String) (succeeded s
 	ctx, cancel := context.WithTimeout(context.Background(), probeTimeout)
 	defer cancel()
 
-	probeGroup, egCtx := errgroup.WithContext(ctx)
+	// Empty errgroup is used as cancellation on first error is not desired, all probes should be
+	// attempted even if one fails.
+	var probeGroup errgroup.Group
 	healthyDests := make(chan string, dests.Len())
 
-	var probed bool
 	var sawNotMesh atomic.Bool
 	for dest := range dests {
 		if healthy.Has(dest) {
@@ -260,11 +261,9 @@ func (rw *revisionWatcher) probePodIPs(ready, notReady sets.String) (succeeded s
 			continue
 		}
 
-		probed = true
-
 		dest := dest // Standard Go concurrency pattern.
 		probeGroup.Go(func() error {
-			ok, notMesh, err := rw.probe(egCtx, dest)
+			ok, notMesh, err := rw.probe(ctx, dest)
 			if ok && (ready.Has(dest) || rw.enableProbeOptimisation) {
 				healthyDests <- dest
 			}
@@ -280,8 +279,6 @@ func (rw *revisionWatcher) probePodIPs(ready, notReady sets.String) (succeeded s
 	err = probeGroup.Wait()
 	close(healthyDests)
 
-	unchanged := probed && len(healthyDests) == 0
-
 	for d := range healthyDests {
 		healthy.Insert(d)
 	}
@@ -292,6 +289,9 @@ func (rw *revisionWatcher) probePodIPs(ready, notReady sets.String) (succeeded s
 			healthy.Delete(d)
 		}
 	}
+
+	// Unchanged only if we match the incoming healthy set, as this handles all possible updates
+	unchanged := healthy.Equal(rw.healthyPods)
 
 	return healthy, unchanged, sawNotMesh.Load(), err
 }
