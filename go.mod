@@ -4,6 +4,7 @@ go 1.21
 
 require (
 	github.com/google/go-cmp v0.6.0
+	github.com/hashicorp/golang-lru v1.0.2
 	go.uber.org/zap v1.26.0
 	istio.io/api v1.19.3
 	k8s.io/api v0.28.3
@@ -14,7 +15,7 @@ require (
 	knative.dev/net-istio v0.39.0
 	knative.dev/networking v0.0.0-20231017124814-2a7676e912b7
 	knative.dev/pkg v0.0.0-20231023151236-29775d7c9e5c
-	knative.dev/serving v0.39.0
+	knative.dev/serving v0.39.2
 
 )
 
@@ -84,7 +85,6 @@ require (
 	github.com/google/uuid v1.3.1 // indirect
 	github.com/gorilla/websocket v1.5.0 // indirect
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.11.3 // indirect
-	github.com/hashicorp/golang-lru v1.0.2 // indirect
 	github.com/imdario/mergo v0.3.12 // indirect
 	github.com/jmespath/go-jmespath v0.4.0 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
