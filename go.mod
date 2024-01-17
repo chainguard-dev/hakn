@@ -6,13 +6,13 @@ require (
 	github.com/google/go-cmp v0.6.0
 	github.com/hashicorp/golang-lru v1.0.2
 	go.uber.org/zap v1.26.0
-	istio.io/api v1.19.3
+	istio.io/api v1.19.6
 	k8s.io/api v0.28.3
 	k8s.io/apimachinery v0.28.3
 	k8s.io/client-go v0.28.3
 	knative.dev/caching v0.0.0-20231017130712-54d0758671ef
 	knative.dev/hack v0.0.0-20231016131700-2c938d4918da
-	knative.dev/net-istio v0.39.1
+	knative.dev/net-istio v0.39.2
 	knative.dev/networking v0.0.0-20231017124814-2a7676e912b7
 	knative.dev/pkg v0.0.0-20231023151236-29775d7c9e5c
 	knative.dev/serving v0.39.3
@@ -134,7 +134,7 @@ require (
 	gopkg.in/inf.v0 v0.9.1 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
-	istio.io/client-go v1.19.3 // indirect
+	istio.io/client-go v1.19.6 // indirect
 	k8s.io/apiextensions-apiserver v0.27.6 // indirect
 	k8s.io/code-generator v0.27.6 // indirect
 	k8s.io/gengo v0.0.0-20221011193443-fad74ee6edd9 // indirect
