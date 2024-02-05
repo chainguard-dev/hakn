@@ -111,7 +111,7 @@ func main() {
 
 	// We sometimes startup faster than we can reach kube-api. Poll on failure to prevent us terminating
 	var err error
-	if perr := wait.PollImmediate(time.Second, 60*time.Second, func() (bool, error) {
+	if perr := wait.PollUntilContextTimeout(ctx, time.Second, 60*time.Second, true, func(context.Context) (bool, error) {
 		if err = version.CheckMinimumVersion(kubeClient.Discovery()); err != nil {
 			log.Print("Failed to get k8s version ", err)
 		}
@@ -237,12 +237,13 @@ func main() {
 	// NOTE: MetricHandler is being used as the outermost handler of the meaty bits. We're not interested in measuring
 	// the healthchecks or probes.
 	ah = activatorhandler.NewMetricHandler(env.PodName, ah)
+	// We need the context handler to run first so ctx gets the revision info.
+	ah = activatorhandler.WrapActivatorHandlerWithFullDuplex(ah, logger)
 	ah = activatorhandler.NewContextHandler(ctx, ah, configStore)
 
 	// Network probe handlers.
 	ah = &activatorhandler.ProbeHandler{NextHandler: ah}
 	ah = netprobe.NewHandler(ah)
-
 	// Set up our health check based on the health of stat sink and environmental factors.
 	sigCtx := signals.NewContext()
 	hc := newHealthCheck(sigCtx, logger, statSink)
